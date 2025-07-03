@@ -10,7 +10,7 @@
 - 🔋 **Pet Energy System** - Charge your pet when it's tired
 ```
 
-Visit `http://localhost:8080` and meet your digital pet! 🤖
+Visit `kuk1song.com` and meet your digital pet! 🤖
 
 ## 🎮 How to Play
 
@@ -28,4 +28,4 @@ Visit `http://localhost:8080` and meet your digital pet! 🤖
 
 ---
 
-*Don't forget to charge your pet! 🔋*
+**Don't forget to charge your pet! 🔋**
