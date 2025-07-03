@@ -1,73 +1,35 @@
-# Welcome to your Lovable project
+# 🤖 Hey Human
 
-## Project info
+> My personal portfolio with a cyberpunk digital pet
 
-**URL**: https://lovable.dev/projects/435b07f9-d879-42f6-a4b6-bea457dd7a60
+## ✨ What's Special?
 
-## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/435b07f9-d879-42f6-a4b6-bea457dd7a60) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+- 🐾 **Interactive Digital Pet** - Drag it around, shoot lasers with spacebar
+- ⚡ **Cyberpunk Style** - Neon glows, particles, glitch effects
+- 🎮 **Keyboard Controls** - Arrow keys to move, spacebar for lasers
+- 🔋 **Pet Energy System** - Charge your pet when it's tired
 ```
 
-**Edit a file directly in GitHub**
+Visit `http://localhost:8080` and meet your digital pet! 🤖
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🎮 How to Play
 
-**Use GitHub Codespaces**
+1. **Drag** your pet around the screen
+2. **Press spacebar** to shoot lasers ⚡
+3. **Use arrow keys** for precise movement
+4. **Charge** your pet when energy is low 🔋
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🛠️ Tech Stack
 
-## What technologies are used for this project?
+React + TypeScript + Tailwind + Vite
 
-This project is built with:
+## 👨‍💻 About Me
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+**Haokun Song** - AI Product Builder & Software Engineer
 
-## How can I deploy this project?
+📧 shk741612898@gmail.com  
+💼 [LinkedIn](https://www.linkedin.com/in/haokun-song/)
 
-Simply open [Lovable](https://lovable.dev/projects/435b07f9-d879-42f6-a4b6-bea457dd7a60) and click on Share -> Publish.
+---
 
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+*Don't forget to charge your pet! 🔋*
