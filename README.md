@@ -8,7 +8,6 @@
 - ⚡ **Cyberpunk Style** - Neon glows, particles, glitch effects
 - 🎮 **Keyboard Controls** - Arrow keys to move, spacebar for lasers
 - 🔋 **Pet Energy System** - Charge your pet when it's tired
-```
 
 Visit `kuk1song.com` and meet your digital pet! 🤖
 
