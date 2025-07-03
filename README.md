@@ -19,10 +19,6 @@ Visit `http://localhost:8080` and meet your digital pet! 🤖
 3. **Use arrow keys** for precise movement
 4. **Charge** your pet when energy is low 🔋
 
-## 🛠️ Tech Stack
-
-React + TypeScript + Tailwind + Vite
-
 ## 👨‍💻 About Me
 
 **Haokun Song** - AI Product Builder & Software Engineer
