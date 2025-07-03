@@ -9,7 +9,7 @@
 - 🎮 **Keyboard Controls** - Arrow keys to move, spacebar for lasers
 - 🔋 **Pet Energy System** - Charge your pet when it's tired
 
-Visit `kuk1song.com` and meet your digital pet! 🤖
+Visit [kuk1song.com](kuk1song.com) and meet your digital pet! 🤖
 
 ## 🎮 How to Play
 
@@ -27,4 +27,4 @@ Visit `kuk1song.com` and meet your digital pet! 🤖
 
 ---
 
-**Don't forget to charge your pet! 🔋**
+**Don't forget to charge your pet!**
