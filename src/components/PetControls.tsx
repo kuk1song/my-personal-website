@@ -10,6 +10,28 @@ interface PetControlsProps {
 }
 
 const PetControls: React.FC<PetControlsProps> = ({ energy, onLaser, onPlay, isLaserActive = false }) => {
+  const handleLaserClick = () => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'pet_laser_button', {
+        event_category: 'pet_interaction',
+        event_label: 'laser_button_click',
+        pet_energy: energy
+      });
+    }
+    onLaser();
+  };
+
+  const handlePlayClick = () => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'pet_play_button', {
+        event_category: 'pet_interaction',
+        event_label: 'play_button_click',
+        pet_energy: energy
+      });
+    }
+    onPlay();
+  };
+
   return (
     <div className="fixed bottom-2 sm:bottom-4 left-1/2 transform -translate-x-1/2 z-50 flex space-x-1 sm:space-x-2">
       <Button 
@@ -18,7 +40,7 @@ const PetControls: React.FC<PetControlsProps> = ({ energy, onLaser, onPlay, isLa
         className={`border border-[#48CAE4] bg-[#030637]/80 hover:bg-[#0077B6]/20 text-[#48CAE4] font-mono rounded-none px-2 sm:px-4 py-1 sm:py-2 ${
           energy < 6 ? 'opacity-50 cursor-not-allowed' : ''
         } ${isLaserActive ? 'bg-red-600/20 border-red-400' : ''}`}
-        onClick={onLaser}
+        onClick={handleLaserClick}
         disabled={energy < 6}
       >
         <div className="flex items-center text-xs">
@@ -32,7 +54,7 @@ const PetControls: React.FC<PetControlsProps> = ({ energy, onLaser, onPlay, isLa
         size="sm"
         variant="outline"
         className="border border-[#48CAE4] bg-[#030637]/80 hover:bg-[#0077B6]/20 text-[#48CAE4] font-mono rounded-none px-2 sm:px-4 py-1 sm:py-2"
-        onClick={onPlay}
+        onClick={handlePlayClick}
       >
         <span className="text-xs">Play</span>
       </Button>

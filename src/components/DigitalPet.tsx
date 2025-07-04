@@ -12,6 +12,17 @@ import { usePetCollisions } from '@/hooks/usePetCollisions';
 import { usePetStateManager } from '@/hooks/usePetStateManager';
 import { usePetInteractionHandlers } from '@/hooks/usePetInteractionHandlers';
 
+const trackPetEvent = (eventName: string, parameters: any = {}) => {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', eventName, {
+      event_category: 'pet_interaction',
+      event_label: eventName,
+      ...parameters
+    });
+    console.log(`🐾 Pet event tracked: ${eventName}`, parameters);
+  }
+};
+
 const DigitalPet = () => {
   const chargingStationPosition = { x: 80, y: 80 };
   const initialPosition = { x: chargingStationPosition.x + 40, y: chargingStationPosition.y + 40 };
@@ -81,12 +92,20 @@ const DigitalPet = () => {
   const handleLaser = useCallback(() => {
     console.log('handleLaser called, energy:', energy, 'isVisible:', isVisible);
     if (!isVisible) return;
+    
+    // 追踪激光事件
+    trackPetEvent('pet_laser_keyboard', {
+      pet_energy: energy,
+      position_x: position.x,
+      position_y: position.y,
+      trigger: 'spacebar'
+    });
+    
     actions.laser();
-    // Mark as interacted when using laser
     if (!hasInteracted) {
       setHasInteracted(true);
     }
-  }, [actions.laser, energy, isVisible, hasInteracted]);
+  }, [actions.laser, energy, isVisible, hasInteracted, position]);
 
   // Keyboard laser action
   useEffect(() => {
@@ -119,6 +138,14 @@ const DigitalPet = () => {
 
   // Enhanced mouse interaction tracking
   const handleEnhancedMouseDown = (e: React.MouseEvent) => {
+    trackPetEvent('pet_drag_start', {
+      pet_energy: energy,
+      pet_mood: mood,
+      position_x: position.x,
+      position_y: position.y,
+      trigger: 'mouse'
+    });
+    
     handleMouseDown(e);
     if (!hasInteracted) {
       setHasInteracted(true);
@@ -127,6 +154,14 @@ const DigitalPet = () => {
 
   // Enhanced touch interaction tracking
   const handleEnhancedTouchStart = (e: React.TouchEvent) => {
+    trackPetEvent('pet_touch_start', {
+      pet_energy: energy,
+      pet_mood: mood,
+      position_x: position.x,
+      position_y: position.y,
+      trigger: 'touch'
+    });
+    
     handleTouchStart(e);
     if (!hasInteracted) {
       setHasInteracted(true);
