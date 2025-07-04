@@ -1,6 +1,17 @@
 import React from 'react';
 import { Bot } from 'lucide-react';
 
+// Event tracking function
+const trackEvent = (eventName: string, parameters?: any) => {
+  if (window.gtag) {
+    window.gtag('event', eventName, {
+      event_category: 'pet_interaction',
+      event_label: eventName,
+      ...parameters
+    });
+  }
+};
+
 interface PetDisplayProps {
   position: { x: number; y: number };
   mood: string;
@@ -24,37 +35,55 @@ const PetDisplay: React.FC<PetDisplayProps> = ({
   isCharging,
   isLaserActive
 }) => {
+  // Track pet dragging
+  const handleMouseDown = (e: React.MouseEvent) => {
+    trackEvent('pet_dragged', {
+      pet_energy: energy,
+      pet_mood: mood
+    });
+    onMouseDown(e);
+  };
+
+  // Track touch interaction
+  const handleTouchStart = (e: React.TouchEvent) => {
+    trackEvent('pet_touched', {
+      pet_energy: energy,
+      pet_mood: mood
+    });
+    onTouchStart?.(e);
+  };
+
   const getMoodText = () => {
-    // 优先显示充电状态
+    // Display charging status first
     if (isCharging) {
       return 'Charging...';
     }
     
-    // 发射激光时显示"Zap!"
+    // Display "Zap!" when shooting laser
     if (isLaserActive) {
       return 'Zap!';
     }
     
-    // play期间不显示任何文字
+    // Do not display any text during play
     if (mood === 'playful' || mood === 'dizzy') {
       return '';
     }
     
-    // 低能量时显示需要充电的消息
+    // Display "Need charging..." when low energy
     if (energy <= 10) {
       return 'Need charging...';
     }
     
-    // 如果有自定义消息，且不在play状态，显示它
+    // Display custom message if it exists and is not in play state
     if (customMessage && mood !== 'playful' && mood !== 'dizzy') {
       return customMessage;
     }
     
-    // 根据心情显示消息
+    // Display message based on mood
     switch (mood) {
       case 'excited': return 'Zap!';
-      case 'playful': return ''; // play的时候不显示任何文字
-      case 'dizzy': return '';   // dizzy的时候也不显示文字
+      case 'playful': return ''; // Do not display any text during play
+      case 'dizzy': return '';   // Do not display text during dizzy
       case 'tired': return 'Need charging...';
       case 'charging': return 'Charging...';
       case 'content': return 'Happy!';
@@ -76,8 +105,8 @@ const PetDisplay: React.FC<PetDisplayProps> = ({
         top: `${position.y}px`,
         transform: 'translate(-50%, -50%)'
       }}
-      onMouseDown={onMouseDown}
-      onTouchStart={onTouchStart}
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
     >
       <div className="relative">
         <Bot 
