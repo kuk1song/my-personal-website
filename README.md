@@ -28,3 +28,13 @@ Visit [kuk1song.com](kuk1song.com) and meet your digital pet! 🤖
 ---
 
 **Don't forget to charge your pet!**
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🎯 Copyright
+
+© 2025 Haokun Song. All rights reserved.
+
+Original design and implementation by Kuki Song.

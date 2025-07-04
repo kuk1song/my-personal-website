@@ -1,8 +1,20 @@
 {
-    "name": "vite_react_shadcn_ts",
+    "name": "kuki-personal-website",
     "private": true,
-    "version": "0.0.0",
+    "version": "1.0.0",
     "type": "module",
+    "author": "Haokun Song <shk741612898@gmail.com>",
+    "license": "MIT",
+    "description": "Personal portfolio website with interactive digital pet and cyberpunk design by Kuki Song",
+    "homepage": "https://kuk1song.com",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kuk1song/my-personal-website"
+    },
+    "keywords": ["portfolio", "react", "typescript", "cyberpunk", "digital-pet", "three.js", "personal-website"],
+    "bugs": {
+        "url": "https://github.com/kuk1song/my-personal-website/issues"
+    },
     "scripts": {
       "dev": "vite",
       "build": "vite build",

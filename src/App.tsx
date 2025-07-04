@@ -1,3 +1,13 @@
+/**
+ * Personal Portfolio Website
+ * Copyright (c) 2025 Haokun Song
+ * Licensed under MIT License
+ * 
+ * Original design and implementation by Haokun Song
+ * https://kuk1song.com
+ * https://github.com/kuk1song/my-personal-website
+ */
+
 import { useEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";

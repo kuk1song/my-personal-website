@@ -91,27 +91,27 @@
 
 @keyframes cyberpunk-glitch {
   0% { transform: translate(-50%, 0) skew(0deg); opacity: 0.2; }
-  2% { transform: translate(-50%, 2px) skew(0.5deg); opacity: 0.3; }
-  4% { transform: translate(-50%, -2px) skew(-0.5deg); opacity: 0.2; }
-  6% { transform: translate(-50%, 1px) skew(0.2deg); opacity: 0.4; }
+  2% { transform: translate(-50%, 0.01em) skew(0.5deg); opacity: 0.3; }
+  4% { transform: translate(-50%, -0.01em) skew(-0.5deg); opacity: 0.2; }
+  6% { transform: translate(-50%, 0.005em) skew(0.2deg); opacity: 0.4; }
   8% { transform: translate(-50%, 0) skew(0deg); opacity: 0.2; }
   92% { transform: translate(-50%, 0) skew(0deg); opacity: 0.2; }
-  94% { transform: translate(-50%, -1px) skew(-0.3deg); opacity: 0.3; }
-  96% { transform: translate(-50%, 1px) skew(0.4deg); opacity: 0.4; }
-  98% { transform: translate(-50%, -2px) skew(-0.2deg); opacity: 0.2; }
+  94% { transform: translate(-50%, -0.005em) skew(-0.3deg); opacity: 0.3; }
+  96% { transform: translate(-50%, 0.005em) skew(0.4deg); opacity: 0.4; }
+  98% { transform: translate(-50%, -0.01em) skew(-0.2deg); opacity: 0.2; }
   100% { transform: translate(-50%, 0) skew(0deg); opacity: 0.2; }
 }
 
 @keyframes cyberpunk-glitch-2 {
   0% { transform: translate(-50%, 0) skew(0deg); opacity: 0.15; }
-  3% { transform: translate(-50%, -1px) skew(-0.3deg); opacity: 0.25; }
-  5% { transform: translate(-50%, 3px) skew(0.4deg); opacity: 0.3; }
-  7% { transform: translate(-50%, -1px) skew(-0.2deg); opacity: 0.2; }
+  3% { transform: translate(-50%, -0.005em) skew(-0.3deg); opacity: 0.25; }
+  5% { transform: translate(-50%, 0.015em) skew(0.4deg); opacity: 0.3; }
+  7% { transform: translate(-50%, -0.005em) skew(-0.2deg); opacity: 0.2; }
   9% { transform: translate(-50%, 0) skew(0deg); opacity: 0.15; }
   91% { transform: translate(-50%, 0) skew(0deg); opacity: 0.15; }
-  93% { transform: translate(-50%, 2px) skew(0.5deg); opacity: 0.25; }
-  95% { transform: translate(-50%, -3px) skew(-0.4deg); opacity: 0.3; }
-  97% { transform: translate(-50%, 1px) skew(0.1deg); opacity: 0.2; }
+  93% { transform: translate(-50%, 0.01em) skew(0.5deg); opacity: 0.25; }
+  95% { transform: translate(-50%, -0.015em) skew(-0.4deg); opacity: 0.3; }
+  97% { transform: translate(-50%, 0.005em) skew(0.1deg); opacity: 0.2; }
   100% { transform: translate(-50%, 0) skew(0deg); opacity: 0.15; }
 }
 

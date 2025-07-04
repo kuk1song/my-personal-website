@@ -33,7 +33,7 @@ const PetControls: React.FC<PetControlsProps> = ({ energy, onLaser, onPlay, isLa
   };
 
   return (
-    <div className="fixed bottom-2 sm:bottom-4 left-1/2 transform -translate-x-1/2 z-50 flex space-x-1 sm:space-x-2">
+    <div className="fixed bottom-2 sm:bottom-4 left-2 sm:left-4 z-50 flex space-x-1 sm:space-x-2">
       <Button 
         size="sm"
         variant="outline"

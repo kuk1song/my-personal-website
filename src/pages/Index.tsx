@@ -1,3 +1,13 @@
+/**
+ * Personal Portfolio Website
+ * Copyright (c) 2025 Haokun Song
+ * Licensed under MIT License
+ * 
+ * Original design and implementation by Haokun Song
+ * https://kuk1song.com
+ * https://github.com/kuk1song/my-personal-website
+ */
+
 import React from 'react';
 import ParticleBackground from '@/components/ParticleBackground';
 import Navigation from '@/components/Navigation';
