@@ -19,43 +19,58 @@ const AboutSection = () => {
             <span className="font-mono text-[#48CAE4]">// personal_statement.js</span>
           </div>
           
-          <div className="mb-8">
-            <h3 className="text-3xl font-light text-[#CAF0F8] mb-2 font-fira">Haokun Song</h3>
-            <p className="text-lg text-[#48CAE4] font-mono">Software Engineer & AI Product Builder</p>
-          </div>
-          
-          <p className="text-xl text-[#CAF0F8] mb-6 font-mono leading-relaxed">
-            Best friend with AI. Innovative and detail-driven Software Engineer & AI Product Builder, 
-            specializing in AI-native and AI-powered systems.
-          </p>
-          
-          <p className="text-xl text-[#CAF0F8] mb-8 font-mono leading-relaxed">
-            Skilled in rapidly building full-stack applications powered by LLMs, vector search, and real-time pipelines. 
-            Passionate about turning cutting-edge AI into practical, scalable products!
-          </p>
-          
-          <div className="space-y-2 font-mono text-sm text-[#48CAE4]/90">
-            <div>
-              <span className="text-[#48CAE4]">email:</span> 
-              <a href="mailto:shk741612898@gmail.com" className="ml-2 hover:text-[#CAF0F8] transition-colors">
-                shk741612898@gmail.com
-              </a>
+          {/* Container for all text content, ensuring left alignment */}
+          <div className="text-left">
+            <div className="mb-8">
+              <h3 className="text-3xl font-light text-[#CAF0F8] mb-2 font-fira">Haokun Song</h3>
+              {/* Flex container to keep title on one line */}
+              <div className="flex flex-wrap items-center text-lg font-mono">
+                <p className="text-[#48CAE4]">AI Product Engineer</p>
+                {/* I've added a left margin (ml-3) for spacing and used escaped characters for the angle brackets */}
+                <p className="ml-3 text-[#48CAE4]/80 italic">&lt;Full-Stack LLM & Agentic Workflows&gt;</p>
+              </div>
             </div>
+            
+            {/* Horizontal rule for visual separation */}
+            <hr className="border-t border-[#48CAE4]/20 my-8" />
+
             <div>
-              <span className="text-[#48CAE4]">linkedin:</span> 
-              <a 
-                href="https://www.linkedin.com/in/haokun-song/" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="ml-2 hover:text-[#CAF0F8] transition-colors"
-              >
-                linkedin.com/in/haokun-song
-              </a>
+              <p className="text-xl text-[#CAF0F8] mb-6 font-mono leading-relaxed">
+                Hi! I am a Software Engineer focused on AI-native Product Development, Agentic Workflows and Full-Stack delivery. 
+              </p>
+
+              <p className="text-xl text-[#CAF0F8] mb-6 font-mono leading-relaxed">
+               I turn LLMs into usable features—not just demos—by combining GenAI product thinking with structured engineering. 
+              </p>
+              
+              <p className="text-xl text-[#CAF0F8] mb-8 font-mono leading-relaxed">
+                My mission is to build systems that ship, evolve, and create real value for users!
+              </p>
             </div>
-          </div>
-          
-          <div className="mt-8 font-mono text-sm text-[#48CAE4]/90">
-            <span>$ cd projects</span>
+            
+            <div className="space-y-2 font-mono text-sm text-[#48CAE4]/90">
+              <div>
+                <span className="text-[#48CAE4]">email:</span> 
+                <a href="mailto:shk741612898@gmail.com" className="ml-2 hover:text-[#CAF0F8] transition-colors">
+                  shk741612898@gmail.com
+                </a>
+              </div>
+              <div>
+                <span className="text-[#48CAE4]">linkedin:</span> 
+                <a 
+                  href="https://www.linkedin.com/in/haokun-song/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="ml-2 hover:text-[#CAF0F8] transition-colors"
+                >
+                  linkedin.com/in/haokun-song
+                </a>
+              </div>
+            </div>
+            
+            <div className="mt-8 font-mono text-sm text-[#48CAE4]/90">
+              <span>$ cd ../products</span>
+            </div>
           </div>
         </div>
         

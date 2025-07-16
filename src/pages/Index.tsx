@@ -13,7 +13,7 @@ import ParticleBackground from '@/components/ParticleBackground';
 import Navigation from '@/components/Navigation';
 import HeroSection from '@/components/HeroSection';
 import AboutSection from '@/components/AboutSection';
-import ProjectsSection from '@/components/ProjectsSection';
+import ProductsSection from '@/components/ProductsSection';
 import DigitalPet from '@/components/DigitalPet';
 
 const Index = () => {
@@ -25,7 +25,7 @@ const Index = () => {
       <main className="relative z-10">
         <HeroSection />
         <AboutSection />
-        <ProjectsSection />
+        <ProductsSection />
       </main>
 
       <footer className="relative z-10 py-8">

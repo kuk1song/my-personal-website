@@ -1,14 +1,14 @@
 import React from 'react';
 
-const ProjectsSection = () => {
+const ProductsSection = () => {
   return (
-    <section id="projects" className="py-20 relative">
+    <section id="products" className="py-20 relative">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <div className="inline-block mb-4">
             <span className="font-mono text-[#48CAE4] opacity-70 mr-2">03.</span>
             <h2 className="text-5xl font-light mb-2 text-gradient tracking-wide font-fira">
-              Projects
+              Products
             </h2>
           </div>
           <div className="w-20 h-px bg-[#48CAE4]/30 mx-auto"></div>
@@ -20,7 +20,7 @@ const ProjectsSection = () => {
               <span className="font-mono text-[#48CAE4]">// coming_soon.js</span>
             </div>
             <p className="text-xl text-[#CAF0F8] font-mono leading-relaxed">
-              Projects will be added here soon...
+              Products will be added here soon...
             </p>
             <div className="mt-8 font-mono text-sm text-[#48CAE4]/90">
               <span>$ git commit -m "Building amazing AI products"</span>
@@ -36,4 +36,4 @@ const ProjectsSection = () => {
   );
 };
 
-export default ProjectsSection;
+export default ProductsSection;
