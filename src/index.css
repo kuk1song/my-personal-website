@@ -210,6 +210,54 @@
     0 0 25px rgba(0, 255, 136, 0.7);
 }
 
+/* New animations for left-aligned glitch effect */
+@keyframes cyberpunk-glitch-left {
+  0% { transform: translate(0, 0) skew(0deg); opacity: 0.2; }
+  2% { transform: translate(0, 0.01em) skew(0.5deg); opacity: 0.3; }
+  4% { transform: translate(0, -0.01em) skew(-0.5deg); opacity: 0.2; }
+  6% { transform: translate(0, 0.005em) skew(0.2deg); opacity: 0.4; }
+  8% { transform: translate(0, 0) skew(0deg); opacity: 0.2; }
+  92% { transform: translate(0, 0) skew(0deg); opacity: 0.2; }
+  94% { transform: translate(0, -0.005em) skew(-0.3deg); opacity: 0.3; }
+  96% { transform: translate(0, 0.005em) skew(0.4deg); opacity: 0.4; }
+  98% { transform: translate(0, -0.01em) skew(-0.2deg); opacity: 0.2; }
+  100% { transform: translate(0, 0) skew(0deg); opacity: 0.2; }
+}
+
+@keyframes cyberpunk-glitch-2-left {
+  0% { transform: translate(0, 0) skew(0deg); opacity: 0.15; }
+  3% { transform: translate(0, -0.005em) skew(-0.3deg); opacity: 0.25; }
+  5% { transform: translate(0, 0.015em) skew(0.4deg); opacity: 0.3; }
+  7% { transform: translate(0, -0.005em) skew(-0.2deg); opacity: 0.2; }
+  9% { transform: translate(0, 0) skew(0deg); opacity: 0.15; }
+  91% { transform: translate(0, 0) skew(0deg); opacity: 0.15; }
+  93% { transform: translate(0, 0.01em) skew(0.5deg); opacity: 0.25; }
+  95% { transform: translate(0, -0.015em) skew(-0.4deg); opacity: 0.3; }
+  97% { transform: translate(0, 0.005em) skew(0.1deg); opacity: 0.2; }
+  100% { transform: translate(0, 0) skew(0deg); opacity: 0.15; }
+}
+
+.cyberpunk-glitch-left {
+  animation: cyberpunk-glitch-left 3s infinite;
+  z-index: 1;
+  mix-blend-mode: screen;
+  text-shadow: 
+    0 0 8px #ff0040,
+    0 0 15px #ff0040,
+    0 0 25px rgba(255, 0, 64, 0.7);
+}
+
+.cyberpunk-glitch-2-left {
+  animation: cyberpunk-glitch-2-left 2.5s infinite;
+  z-index: 2;
+  mix-blend-mode: screen;
+  text-shadow: 
+    0 0 8px #00ff88,
+    0 0 15px #00ff88,
+    0 0 25px rgba(0, 255, 136, 0.7);
+}
+
+
 /* Gradient backgrounds */
 .bg-gradient-radial {
   background-image: radial-gradient(var(--tw-gradient-stops));
