@@ -34,16 +34,31 @@ const Index = () => {
         }
       });
 
-      // Animate Hero Section
-      tl.to('#hero-content', { scale: 2, opacity: 0, ease: 'power2.inOut' });
+      // 1. Animate Hero Section OUT (Zoom Through)
+      tl.to('#hero-content', { 
+        scale: 2, 
+        opacity: 0, 
+        ease: 'power2.inOut' 
+      });
 
-      // Animate About Section in
-      tl.to('#about-section', { opacity: 1, scale: 1, ease: 'power2.inOut' }, '-=0.5');
-      // Animate About Section out
-      tl.to('#about-section', { scale: 2, opacity: 0, ease: 'power2.inOut' });
+      // 2. Animate About Section IN (From a 'Planet')
+      tl.fromTo('#about-section', 
+        { scale: 0.1, opacity: 0, borderRadius: '50%', filter: 'blur(20px)' }, // FROM: A small, blurry, circular shape
+        { scale: 1, opacity: 1, borderRadius: '0%', filter: 'blur(0px)', ease: 'power2.out', duration: 1.5 } // TO: The final, clear section
+      );
 
-      // Animate Products Section in
-      tl.to('#products-section', { opacity: 1, scale: 1, ease: 'power2.inOut' }, '-=0.5');
+      // 3. Animate About Section OUT (Zoom Through)
+      tl.to('#about-section', { 
+        scale: 2, 
+        opacity: 0, 
+        ease: 'power2.inOut' 
+      });
+
+      // 4. Animate Products Section IN (From a 'Planet')
+      tl.fromTo('#products-section', 
+        { scale: 0.1, opacity: 0, borderRadius: '50%', filter: 'blur(20px)' }, // FROM: A small, blurry, circular shape
+        { scale: 1, opacity: 1, borderRadius: '0%', filter: 'blur(0px)', ease: 'power2.out', duration: 1.5 } // TO: The final, clear section
+      );
 
     }, mainRef);
 
@@ -56,11 +71,10 @@ const Index = () => {
       <Navigation />
       
       {/* 
-        This new structure is key. 
-        The outer div creates the scrollable area.
-        The inner div holds all sections, stacked on top of each other.
+        By increasing the height here, we give the timeline more scroll distance to play out.
+        This makes each section's animation feel longer and more deliberate.
       */}
-      <div style={{ height: '300vh' }} ref={mainRef}> {/* This creates the scrollable space */}
+      <div style={{ height: '600vh' }} ref={mainRef}> {/* This creates the scrollable space */}
         <div className="sticky top-0 h-screen overflow-hidden"> {/* Added overflow-hidden here */}
           <HeroSection />
           <AboutSection />
