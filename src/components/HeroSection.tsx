@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const HeroSection = () => {
   const [isGlowing, setIsGlowing] = useState(false);
-
+  
   // Listen for pet collision and leave events
   useEffect(() => {
     const handlePetCollision = (event: CustomEvent) => {
@@ -27,7 +27,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section id="home" className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+    <section id="hero-section" className="absolute inset-0 h-screen w-screen flex flex-col items-center justify-center">
       {/* Central art elements - 调整透明度让光晕更淡 */}
       <div className="absolute w-[800px] h-[800px] rounded-full bg-gradient-radial from-[#0077B6]/10 to-transparent"></div>
       <div className="absolute w-[600px] h-[600px] rounded-full border border-[#48CAE4]/10 animate-pulse"></div>
@@ -37,7 +37,7 @@ const HeroSection = () => {
       <div className="absolute top-[20%] left-[10%] w-[100px] h-[100px] border border-[#48CAE4]/30 rotate-45"></div>
       <div className="absolute bottom-[15%] right-[12%] w-[150px] h-[1px] bg-[#48CAE4]/40"></div>
       
-      <div className="container mx-auto px-6 text-center z-10 relative">
+      <div id="hero-content" className="container mx-auto px-6 text-center z-10 relative">
         <div className="mb-10 inline-block">
           <div className="px-4 py-2 bg-[#030637]/80 border border-[#48CAE4]/40 mb-4 inline-block font-fira">
             <span className="text-[#48CAE4] font-mono">&lt;coder&gt;</span>

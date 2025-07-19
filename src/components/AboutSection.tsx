@@ -2,7 +2,7 @@ import React from 'react';
 
 const AboutSection = () => {
   return (
-    <section id="about" className="py-20 relative">
+    <section id="about-section" className="absolute inset-0 h-screen w-screen flex flex-col items-center justify-center opacity-0">
       <div className="container mx-auto px-6 max-w-4xl">
         <div className="mb-16 text-center">
           <div className="inline-block mb-4">
