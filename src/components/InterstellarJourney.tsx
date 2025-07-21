@@ -8,306 +8,251 @@ interface InterstellarJourneyProps {
   scrollProgress: number;
 }
 
-// Advanced Planet component with realistic rendering and textures
-const Planet = ({ 
-  position, 
-  size, 
-  color, 
+// Physics-accurate planetary ring system
+const PlanetaryRings = ({ 
+  planetRadius, 
+  innerRadius, 
+  outerRadius, 
+  particleCount = 2000,
+  color 
+}: {
+  planetRadius: number;
+  innerRadius: number;
+  outerRadius: number;
+  particleCount?: number;
+  color: string;
+}) => {
+  const ringsRef = useRef<THREE.Points>(null);
+  
+  const ringData = React.useMemo(() => {
+    const positions = [];
+    const colors = [];
+    const sizes = [];
+    const velocities = [];
+    
+    for (let i = 0; i < particleCount; i++) {
+      // Orbital mechanics - particles closer to planet move faster
+      const radius = innerRadius + Math.random() * (outerRadius - innerRadius);
+      const angle = Math.random() * Math.PI * 2;
+      
+      // Keplerian orbital velocity (simplified)
+      const orbitalSpeed = Math.sqrt(planetRadius / radius) * 0.1;
+      
+      const x = Math.cos(angle) * radius;
+      const z = Math.sin(angle) * radius;
+      const y = (Math.random() - 0.5) * 0.02; // Very thin ring
+      
+      positions.push(x, y, z);
+      
+      // Color variation for realism
+      const colorVariation = 0.8 + Math.random() * 0.4;
+      const ringColor = new THREE.Color(color);
+      colors.push(
+        ringColor.r * colorVariation,
+        ringColor.g * colorVariation,
+        ringColor.b * colorVariation
+      );
+      
+      sizes.push(0.02 + Math.random() * 0.03);
+      velocities.push(orbitalSpeed);
+    }
+    
+    return {
+      positions: new Float32Array(positions),
+      colors: new Float32Array(colors),
+      sizes: new Float32Array(sizes),
+      velocities: new Float32Array(velocities)
+    };
+  }, [innerRadius, outerRadius, particleCount, planetRadius, color]);
+  
+  useFrame((state, delta) => {
+    if (ringsRef.current) {
+      const positions = ringsRef.current.geometry.attributes.position.array as Float32Array;
+      
+      // Animate orbital motion
+      for (let i = 0; i < particleCount; i++) {
+        const i3 = i * 3;
+        const x = positions[i3];
+        const z = positions[i3 + 2];
+        const radius = Math.sqrt(x * x + z * z);
+        const currentAngle = Math.atan2(z, x);
+        const velocity = ringData.velocities[i];
+        
+        const newAngle = currentAngle + velocity * delta;
+        positions[i3] = Math.cos(newAngle) * radius;
+        positions[i3 + 2] = Math.sin(newAngle) * radius;
+      }
+      
+      ringsRef.current.geometry.attributes.position.needsUpdate = true;
+    }
+  });
+  
+  return (
+    <points ref={ringsRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={ringData.positions.length / 3}
+          array={ringData.positions}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-color"
+          count={ringData.colors.length / 3}
+          array={ringData.colors}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-size"
+          count={ringData.sizes.length}
+          array={ringData.sizes}
+          itemSize={1}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.05}
+        transparent
+        opacity={0.8}
+        vertexColors
+        sizeAttenuation
+      />
+    </points>
+  );
+};
+
+// Enhanced planet with realistic features
+const EnhancedPlanet = ({
+  position,
+  size,
+  color,
   type,
-  glowIntensity = 0.3,
-  atmosphereColor 
+  atmosphereColor,
+  hasRings = false
 }: {
   position: [number, number, number];
   size: number;
   color: string;
-  type: 'about' | 'products' | 'distant';
-  glowIntensity?: number;
+  type: 'data' | 'tech' | 'distant';
   atmosphereColor?: string;
+  hasRings?: boolean;
 }) => {
   const planetRef = useRef<THREE.Mesh>(null);
   const atmosphereRef = useRef<THREE.Mesh>(null);
-  const ringRef = useRef<THREE.Group>(null);
-  const cloudRef = useRef<THREE.Mesh>(null);
-
+  
   useFrame((state, delta) => {
-    const time = state.clock.getElapsedTime();
-    
-    // Planet rotation
     if (planetRef.current) {
       planetRef.current.rotation.y += delta * 0.1;
     }
-    
-    // Atmosphere rotation (slower)
     if (atmosphereRef.current) {
       atmosphereRef.current.rotation.y += delta * 0.05;
     }
-    
-    // Cloud layer rotation (different speed)
-    if (cloudRef.current) {
-      cloudRef.current.rotation.y += delta * 0.15;
-    }
-    
-    // Ring orbital rotation (correct physics - around Z axis like Saturn)
-    if (ringRef.current) {
-      ringRef.current.rotation.z += delta * 0.2; // Correct orbital rotation
-    }
   });
-
-  // Get planet-specific materials with enhanced textures
-  const getPlanetMaterial = () => {
-    switch (type) {
-      case 'about':
-        // Data/Ocean planet with circuit-like patterns
-        return (
-          <meshStandardMaterial
-            color={color}
-            emissive={color}
-            emissiveIntensity={glowIntensity}
-            roughness={0.4}
-            metalness={0.6}
-            // Enhanced surface details
-            bumpScale={0.02}
-          />
-        );
-      case 'products':
-        // Cyberpunk tech planet with metallic surface
-        return (
-          <meshStandardMaterial
-            color={color}
-            emissive={color}
-            emissiveIntensity={glowIntensity}
-            roughness={0.1}
-            metalness={0.9}
-            // Highly reflective metallic surface
-            bumpScale={0.01}
-          />
-        );
-      case 'distant':
-        return (
-          <meshStandardMaterial
-            color={color}
-            emissive={color}
-            emissiveIntensity={glowIntensity * 0.7}
-            roughness={0.7}
-            metalness={0.3}
-          />
-        );
-    }
-  };
-
-  const hasRings = type === 'about' || type === 'products';
-  const hasClouds = type === 'about';
-  const hasHexGrid = type === 'products'; // Cyberpunk hex grid
-
+  
   return (
     <group position={position}>
-      {/* Main planet with enhanced material */}
-      <mesh ref={planetRef} castShadow receiveShadow>
-        <sphereGeometry args={[size, 128, 128]} />
-        {getPlanetMaterial()}
+      {/* Main planet */}
+      <mesh ref={planetRef}>
+        <sphereGeometry args={[size, 64, 64]} />
+        <meshStandardMaterial
+          color={color}
+          emissive={color}
+          emissiveIntensity={0.2}
+          roughness={type === 'tech' ? 0.1 : 0.7}
+          metalness={type === 'tech' ? 0.9 : 0.1}
+        />
       </mesh>
       
-      {/* Cyberpunk hex grid overlay for products planet */}
-      {hasHexGrid && (
-        <mesh>
-          <sphereGeometry args={[size * 1.005, 32, 32]} />
-          <meshBasicMaterial
-            color="#FF073A"
-            transparent
-            opacity={0.6}
-            wireframe={true}
-          />
-        </mesh>
-      )}
-      
-      {/* Cloud layer for "about" planet */}
-      {hasClouds && (
-        <mesh ref={cloudRef}>
-          <sphereGeometry args={[size * 1.03, 32, 32]} />
-          <meshStandardMaterial
-            color="#ffffff"
-            transparent
-            opacity={0.6}
-            alphaTest={0.1}
-          />
-        </mesh>
-      )}
-      
-      {/* Enhanced atmosphere with multiple layers */}
+      {/* Atmosphere */}
       {atmosphereColor && (
-        <>
-          {/* Inner atmosphere */}
-          <mesh ref={atmosphereRef}>
-            <sphereGeometry args={[size * 1.12, 32, 32]} />
-            <meshStandardMaterial
-              color={atmosphereColor}
-              emissive={atmosphereColor}
-              emissiveIntensity={0.4}
-              transparent
-              opacity={0.7}
-              side={THREE.BackSide}
-            />
-          </mesh>
-          
-          {/* Outer atmosphere glow */}
-          <mesh>
-            <sphereGeometry args={[size * 1.25, 32, 32]} />
-            <meshStandardMaterial
-              color={atmosphereColor}
-              emissive={atmosphereColor}
-              emissiveIntensity={0.3}
-              transparent
-              opacity={0.5}
-              side={THREE.BackSide}
-            />
-          </mesh>
-          
-          {/* Outermost glow */}
-          <mesh>
-            <sphereGeometry args={[size * 1.4, 16, 16]} />
-            <meshBasicMaterial
-              color={atmosphereColor}
-              transparent
-              opacity={0.2}
-              side={THREE.BackSide}
-            />
-          </mesh>
-        </>
+        <mesh ref={atmosphereRef}>
+          <sphereGeometry args={[size * 1.05, 32, 32]} />
+          <meshStandardMaterial
+            color={atmosphereColor}
+            transparent
+            opacity={0.3}
+            side={THREE.BackSide}
+          />
+        </mesh>
       )}
       
-      {/* Planetary rings with correct orbital motion */}
-      {hasRings && (
-        <group ref={ringRef} rotation={[Math.PI / 4, 0, 0]}>
-          {/* Main ring */}
-          <mesh>
-            <torusGeometry args={[size * 1.8, size * 0.12, 3, 100]} />
-            <meshStandardMaterial
-              color={type === 'about' ? "#00F5FF" : "#FF073A"}
-              emissive={type === 'about' ? "#00F5FF" : "#FF073A"}
-              emissiveIntensity={0.6}
-              transparent
-              opacity={0.9}
-              side={THREE.DoubleSide}
-            />
-          </mesh>
-          
-          {/* Secondary ring */}
-          <mesh>
-            <torusGeometry args={[size * 2.2, size * 0.06, 3, 100]} />
-            <meshStandardMaterial
-              color={type === 'about' ? "#48CAE4" : "#FF6B6B"}
-              emissive={type === 'about' ? "#48CAE4" : "#FF6B6B"}
-              emissiveIntensity={0.5}
-              transparent
-              opacity={0.8}
-              side={THREE.DoubleSide}
-            />
-          </mesh>
-          
-          {/* Ring particles - more visible */}
-          {Array.from({ length: 80 }).map((_, i) => {
-            const angle = (i / 80) * Math.PI * 2;
-            const radius = size * (1.6 + Math.random() * 0.8);
-            return (
-              <mesh
-                key={i}
-                position={[
-                  Math.cos(angle) * radius,
-                  0,
-                  Math.sin(angle) * radius
-                ]}
-              >
-                <sphereGeometry args={[size * 0.008, 4, 4]} />
-                <meshBasicMaterial
-                  color={type === 'about' ? "#00F5FF" : "#FF073A"}
-                  transparent
-                  opacity={0.8}
-                />
-              </mesh>
-            );
-          })}
-        </group>
-      )}
-      
-      {/* Enhanced space stations for products planet */}
-      {type === 'products' && (
+      {/* Surface details */}
+      {type === 'data' && (
         <group>
-          {/* Large space station */}
-          <mesh position={[size * 3.2, 0, 0]}>
-            <boxGeometry args={[size * 0.2, size * 0.08, size * 0.2]} />
-            <meshStandardMaterial
-              color="#FFD700"
-              emissive="#FFD700"
-              emissiveIntensity={0.8}
-              metalness={0.9}
-              roughness={0.1}
-            />
-          </mesh>
-          
-          {/* Mining station */}
-          <mesh position={[-size * 2.8, size * 0.8, size * 0.6]}>
-            <cylinderGeometry args={[size * 0.06, size * 0.08, size * 0.15, 8]} />
-            <meshStandardMaterial
-              color="#00FF41"
-              emissive="#00FF41"
-              emissiveIntensity={0.7}
-              metalness={0.8}
-              roughness={0.2}
-            />
-          </mesh>
-          
-          {/* Communication array */}
-          <mesh position={[size * 2.5, size * 1.2, -size * 0.8]}>
-            <coneGeometry args={[size * 0.04, size * 0.12, 6]} />
-            <meshStandardMaterial
-              color="#FF073A"
-              emissive="#FF073A"
-              emissiveIntensity={0.9}
-            />
-          </mesh>
-        </group>
-      )}
-      
-      {/* Enhanced surface cities for about planet */}
-      {type === 'about' && (
-        <group>
-          {Array.from({ length: 30 }).map((_, i) => {
+          {Array.from({ length: 20 }).map((_, i) => {
             const lat = (Math.random() - 0.5) * Math.PI;
             const lon = Math.random() * Math.PI * 2;
-            const x = size * 1.02 * Math.cos(lat) * Math.cos(lon);
-            const y = size * 1.02 * Math.sin(lat);
-            const z = size * 1.02 * Math.cos(lat) * Math.sin(lon);
+            const x = size * 1.01 * Math.cos(lat) * Math.cos(lon);
+            const y = size * 1.01 * Math.sin(lat);
+            const z = size * 1.01 * Math.cos(lat) * Math.sin(lon);
             
             return (
               <mesh key={i} position={[x, y, z]}>
-                <boxGeometry args={[0.03, 0.08, 0.03]} />
+                <boxGeometry args={[0.02, 0.05, 0.02]} />
                 <meshStandardMaterial
                   color="#00F5FF"
                   emissive="#00F5FF"
-                  emissiveIntensity={1.2}
+                  emissiveIntensity={0.8}
                 />
               </mesh>
             );
           })}
+        </group>
+      )}
+      
+      {/* Wireframe overlay for tech planet */}
+      {type === 'tech' && (
+        <mesh>
+          <sphereGeometry args={[size * 1.001, 32, 32]} />
+          <meshBasicMaterial
+            color="#FF073A"
+            transparent
+            opacity={0.4}
+            wireframe
+          />
+        </mesh>
+      )}
+      
+      {/* Planetary rings */}
+      {hasRings && (
+        <group rotation={[Math.PI / 6, 0, 0]}>
+          <PlanetaryRings
+            planetRadius={size}
+            innerRadius={size * 1.2}
+            outerRadius={size * 2.0}
+            particleCount={1500}
+            color={color}
+          />
+          <PlanetaryRings
+            planetRadius={size}
+            innerRadius={size * 2.2}
+            outerRadius={size * 2.8}
+            particleCount={800}
+            color={color}
+          />
         </group>
       )}
     </group>
   );
 };
 
-// Camera controller based on scroll
-const ScrollCamera = ({ scrollProgress }: { scrollProgress: number }) => {
+// Simple smooth camera system
+const SmoothCamera = ({ scrollProgress }: { scrollProgress: number }) => {
   useFrame((state) => {
-    const targetZ = 10 - scrollProgress * 30;
-    const targetX = scrollProgress * 5;
+    const progress = Math.min(Math.max(scrollProgress, 0), 1);
     
-    state.camera.position.z = THREE.MathUtils.lerp(state.camera.position.z, targetZ, 0.05);
-    state.camera.position.x = THREE.MathUtils.lerp(state.camera.position.x, targetX, 0.05);
-    state.camera.position.y = THREE.MathUtils.lerp(state.camera.position.y, Math.sin(scrollProgress * Math.PI) * 3, 0.05);
+    // Simple linear interpolation for camera position
+    const startPos = new THREE.Vector3(0, 2, 12);
+    const endPos = new THREE.Vector3(0, 0, -30);
+    const currentPos = startPos.lerp(endPos, progress);
     
-    state.camera.lookAt(0, 0, state.camera.position.z - 15);
+    // Smooth camera movement
+    state.camera.position.lerp(currentPos, 0.05);
+    
+    // Simple look-at that follows the journey
+    const lookAtTarget = new THREE.Vector3(0, 0, -progress * 20);
+    state.camera.lookAt(lookAtTarget);
   });
-
+  
   return null;
 };
 
@@ -323,7 +268,7 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
       if (sceneTargetRef.current) {
         (window as any).__GLOBAL_3D_SCENE_TARGET__ = sceneTargetRef.current;
         setIsReady(true);
-        console.log('🚀 Advanced Interstellar Journey Ready!');
+        console.log('🌌 Classic Interstellar Journey Ready!');
       }
     }, 100);
 
@@ -335,7 +280,7 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
 
   return (
     <>
-      {/* Enhanced 3D Space Background */}
+      {/* 3D Space Background */}
       <div 
         style={{ 
           position: 'fixed', 
@@ -348,72 +293,67 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
         }}
       >
         <Canvas 
-          camera={{ position: [0, 0, 10], fov: 75 }}
+          camera={{ position: [0, 2, 12], fov: 75 }}
           style={{ width: '100%', height: '100%' }}
           onCreated={(state) => {
-            console.log('🌌 Advanced Journey Canvas created!');
-            state.gl.setClearColor(0x000011, 1);
-            // Enable shadows for more realistic rendering
+            console.log('🌌 Classic Journey Canvas created!');
+            state.gl.setClearColor(0x000008, 1);
             state.gl.shadowMap.enabled = true;
             state.gl.shadowMap.type = THREE.PCFSoftShadowMap;
           }}
         >
-          <ScrollCamera scrollProgress={scrollProgress} />
+          <SmoothCamera scrollProgress={scrollProgress} />
           
-          {/* Enhanced lighting system */}
-          <ambientLight intensity={0.3} />
+          {/* Classic lighting */}
+          <ambientLight intensity={0.1} />
           <directionalLight 
             position={[10, 10, 5]} 
-            intensity={1.2} 
+            intensity={0.8} 
             color="#ffffff"
             castShadow
-            shadow-mapSize-width={2048}
-            shadow-mapSize-height={2048}
           />
-          <pointLight position={[-10, -10, -10]} intensity={0.6} color="#00F5FF" />
-          <pointLight position={[15, 5, 5]} intensity={0.4} color="#FF073A" />
+          <pointLight position={[-20, 0, -10]} intensity={0.3} color="#4A90E2" />
+          <pointLight position={[20, 10, -30]} intensity={0.2} color="#E24A4A" />
           
-          {/* Enhanced starfield */}
-          <Stars 
-            radius={100} 
-            depth={50} 
-            count={12000} 
-            factor={6} 
-            saturation={0} 
-            fade 
-            speed={1.5} 
+          {/* Classic drei Stars */}
+          <Stars
+            radius={100}
+            depth={50}
+            count={5000}
+            factor={4}
+            saturation={0}
+            fade
           />
           
-          {/* Advanced planets - brought much closer for visibility */}
-          <Planet
-            position={[-6, 3, -8]}
-            size={2.5}
-            color="#00B4D8"
-            type="about"
+          {/* Enhanced planets with proper scale and positioning */}
+          <EnhancedPlanet
+            position={[-8, 2, -15]}
+            size={1.8}
+            color="#0077BE"
+            type="data"
             atmosphereColor="#48CAE4"
-            glowIntensity={0.6}
+            hasRings={true}
           />
           
-          <Planet
-            position={[7, -3, -12]}
-            size={3}
-            color="#FF073A"
-            type="products"
+          <EnhancedPlanet
+            position={[12, -3, -35]}
+            size={2.2}
+            color="#DC2626"
+            type="tech"
             atmosphereColor="#FF6B6B"
-            glowIntensity={0.5}
+            hasRings={true}
           />
           
-          <Planet
-            position={[10, 6, -20]}
-            size={2}
+          <EnhancedPlanet
+            position={[18, 8, -65]}
+            size={1.5}
             color="#7C3AED"
             type="distant"
             atmosphereColor="#A78BFA"
-            glowIntensity={0.4}
           />
           
           {/* Charging station portal */}
-          <group ref={sceneTargetRef} position={[0, -2, 0]} scale={0.4} />
+          <group ref={sceneTargetRef} position={[0, -1, 0]} scale={0.3} />
         </Canvas>
       </div>
       
@@ -421,7 +361,6 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
       <div style={{ position: 'relative', zIndex: 1 }}>
         {children}
       </div>
-      
     </>
   );
 };
