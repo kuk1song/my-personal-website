@@ -28,7 +28,7 @@ const ChargingStation: React.FC<ChargingStationProps> = ({
         position: 'fixed',
         top: '4rem', // 从1rem改为4rem，向下移动避免与导航栏重叠
         left: '0.5rem',
-        zIndex: 40,
+        zIndex: 30, // Reduced from 40 to ensure pet is above
         width: 'auto',
         height: 'auto',
         transform: 'translate3d(0, 0, 0)',
@@ -160,8 +160,7 @@ const ChargingStation: React.FC<ChargingStationProps> = ({
     </div>
   );
 
-  // 确保Portal渲染到body的最顶层
-  return createPortal(stationContent, document.body);
+  return stationContent;
 };
 
 export default ChargingStation;

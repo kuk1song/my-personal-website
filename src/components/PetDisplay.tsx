@@ -99,11 +99,12 @@ const PetDisplay: React.FC<PetDisplayProps> = ({
 
   return (
     <div 
-      className="fixed z-50 cursor-pointer touch-none"
+      className="fixed z-[60] cursor-pointer touch-none"
       style={{ 
         left: `${position.x}px`, 
         top: `${position.y}px`,
-        transform: 'translate(-50%, -50%)'
+        transform: 'translate(-50%, -50%)',
+        zIndex: 60 // Higher than all other pet components
       }}
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
