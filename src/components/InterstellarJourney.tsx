@@ -8,46 +8,60 @@ interface InterstellarJourneyProps {
   scrollProgress: number;
 }
 
-// 第一步改进：只改变位置路径，保持简单视角
-const ImprovedCamera = ({ scrollProgress }: { scrollProgress: number }) => {
+// 修复向右转问题的镜像相机系统
+const PerfectMirrorCamera = ({ scrollProgress }: { scrollProgress: number }) => {
+  const currentLookAtRef = useRef(new THREE.Vector3(0, 0, 2));
+  
+  // 定义完整的路径点
+  const pathPoints = React.useMemo(() => [
+    new THREE.Vector3(0, 2, 12),      // 0: Hero start
+    new THREE.Vector3(-4, 2, 4),      // 1: 向蓝色区域
+    new THREE.Vector3(-8, 2, -8),     // 2: 接近蓝色星球
+    new THREE.Vector3(-12, 2, -20),   // 3: 蓝色星球左侧
+    new THREE.Vector3(-6, 0, -28),    // 4: 离开蓝色，转向红色
+    new THREE.Vector3(6, -1, -32),    // 5: 接近红色星球
+    new THREE.Vector3(16, -1, -38),   // 6: 红色星球右侧
+    new THREE.Vector3(20, -1, -40),   // 7: 离开红色
+    new THREE.Vector3(19, 2, -50),    // 8: 转向紫色
+    new THREE.Vector3(18, 6, -68)     // 9: 紫色星球终点
+  ], []);
+
   useFrame((state) => {
     const progress = Math.min(Math.max(scrollProgress, 0), 1);
     
-    // 设计侧面飞过的路径
-    let currentPos;
+    // 将进度映射到路径点
+    const totalSegments = pathPoints.length - 1;
+    const segmentIndex = Math.floor(progress * totalSegments);
+    const segmentProgress = (progress * totalSegments) - segmentIndex;
     
-    if (progress <= 0.33) {
-      // Hero → About Me: 从蓝色星球左侧飞过
-      const localProgress = progress / 0.33;
-      const startPos = new THREE.Vector3(0, 2, 12);
-      const endPos = new THREE.Vector3(-12, 2, -20);  // 蓝色星球左侧
-      currentPos = new THREE.Vector3().lerpVectors(startPos, endPos, localProgress);
-    } else if (progress <= 0.66) {
-      // About Me → Products: 从红色星球右侧飞过
-      const localProgress = (progress - 0.33) / 0.33;
-      const startPos = new THREE.Vector3(-12, 2, -20);
-      const endPos = new THREE.Vector3(20, -1, -40);  // 红色星球右侧
-      currentPos = new THREE.Vector3().lerpVectors(startPos, endPos, localProgress);
-    } else {
-      // Products → End: 接近紫色星球
-      const localProgress = (progress - 0.66) / 0.34;
-      const startPos = new THREE.Vector3(20, -1, -40);
-      const endPos = new THREE.Vector3(18, 6, -68);   // 接近紫色星球
-      currentPos = new THREE.Vector3().lerpVectors(startPos, endPos, localProgress);
-    }
+    // 确保索引在有效范围内
+    const currentIndex = Math.min(segmentIndex, totalSegments - 1);
+    const nextIndex = Math.min(currentIndex + 1, totalSegments);
     
-    // 保持稳定的移动
-    state.camera.position.lerp(currentPos, 0.02);
+    // 在两个路径点之间插值
+    const currentPoint = pathPoints[currentIndex];
+    const nextPoint = pathPoints[nextIndex];
+    const targetPos = new THREE.Vector3().lerpVectors(currentPoint, nextPoint, segmentProgress);
     
-    // 保持简单的前瞻视角（暂时不改变）
-    const lookAt = new THREE.Vector3(0, 0, currentPos.z - 10);
-    state.camera.lookAt(lookAt);
+    // 非常温和的移动
+    state.camera.position.lerp(targetPos, 0.02);
+    
+    // 修复向右转问题：使用更稳定的前瞻计算
+    const targetLookAt = new THREE.Vector3(
+      targetPos.x * 0.05,  // 减少水平偏移
+      targetPos.y * 0.05,  // 减少垂直偏移  
+      targetPos.z - 15     // 固定前瞻距离
+    );
+    
+    // 平滑的视角过渡，避免突然转向
+    currentLookAtRef.current.lerp(targetLookAt, 0.01); // 非常慢的视角变化
+    state.camera.lookAt(currentLookAtRef.current);
   });
   
   return null;
 };
 
-// 保留您优化的星球系统（完全不变）
+// 保留您优化的星球系统
 const PlanetaryRings = ({ 
   planetRadius, 
   innerRadius, 
@@ -301,13 +315,13 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
           camera={{ position: [0, 2, 12], fov: 75 }}
           style={{ width: '100%', height: '100%' }}
           onCreated={(state) => {
-            console.log('🛸 Improved Journey Canvas created!');
+            console.log('🎯 Perfect Mirror Journey Canvas created!');
             state.gl.setClearColor(0x000008, 1);
             state.gl.shadowMap.enabled = true;
             state.gl.shadowMap.type = THREE.PCFSoftShadowMap;
           }}
         >
-          <ImprovedCamera scrollProgress={scrollProgress} />
+          <PerfectMirrorCamera scrollProgress={scrollProgress} />
           
           <ambientLight intensity={0.1} />
           <directionalLight 
