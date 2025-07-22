@@ -8,46 +8,7 @@ interface InterstellarJourneyProps {
   scrollProgress: number;
 }
 
-// 第一步改进：只改变位置路径，保持简单视角
-const ImprovedCamera = ({ scrollProgress }: { scrollProgress: number }) => {
-  useFrame((state) => {
-    const progress = Math.min(Math.max(scrollProgress, 0), 1);
-    
-    // 设计侧面飞过的路径
-    let currentPos;
-    
-    if (progress <= 0.33) {
-      // Hero → About Me: 从蓝色星球左侧飞过
-      const localProgress = progress / 0.33;
-      const startPos = new THREE.Vector3(0, 2, 12);
-      const endPos = new THREE.Vector3(-12, 2, -20);  // 蓝色星球左侧
-      currentPos = new THREE.Vector3().lerpVectors(startPos, endPos, localProgress);
-    } else if (progress <= 0.66) {
-      // About Me → Products: 从红色星球右侧飞过
-      const localProgress = (progress - 0.33) / 0.33;
-      const startPos = new THREE.Vector3(-12, 2, -20);
-      const endPos = new THREE.Vector3(20, -1, -40);  // 红色星球右侧
-      currentPos = new THREE.Vector3().lerpVectors(startPos, endPos, localProgress);
-    } else {
-      // Products → End: 接近紫色星球
-      const localProgress = (progress - 0.66) / 0.34;
-      const startPos = new THREE.Vector3(20, -1, -40);
-      const endPos = new THREE.Vector3(18, 6, -68);   // 接近紫色星球
-      currentPos = new THREE.Vector3().lerpVectors(startPos, endPos, localProgress);
-    }
-    
-    // 保持稳定的移动
-    state.camera.position.lerp(currentPos, 0.02);
-    
-    // 保持简单的前瞻视角（暂时不改变）
-    const lookAt = new THREE.Vector3(0, 0, currentPos.z - 10);
-    state.camera.lookAt(lookAt);
-  });
-  
-  return null;
-};
-
-// 保留您优化的星球系统（完全不变）
+// Physics-accurate planetary ring system
 const PlanetaryRings = ({ 
   planetRadius, 
   innerRadius, 
@@ -70,16 +31,20 @@ const PlanetaryRings = ({
     const velocities = [];
     
     for (let i = 0; i < particleCount; i++) {
+      // Orbital mechanics - particles closer to planet move faster
       const radius = innerRadius + Math.random() * (outerRadius - innerRadius);
       const angle = Math.random() * Math.PI * 2;
+      
+      // Keplerian orbital velocity (simplified)
       const orbitalSpeed = Math.sqrt(planetRadius / radius) * 0.1;
       
       const x = Math.cos(angle) * radius;
       const z = Math.sin(angle) * radius;
-      const y = (Math.random() - 0.5) * 0.02;
+      const y = (Math.random() - 0.5) * 0.02; // Very thin ring
       
       positions.push(x, y, z);
       
+      // Color variation for realism
       const colorVariation = 0.8 + Math.random() * 0.4;
       const ringColor = new THREE.Color(color);
       colors.push(
@@ -104,6 +69,7 @@ const PlanetaryRings = ({
     if (ringsRef.current) {
       const positions = ringsRef.current.geometry.attributes.position.array as Float32Array;
       
+      // Animate orbital motion
       for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
         const x = positions[i3];
@@ -154,6 +120,7 @@ const PlanetaryRings = ({
   );
 };
 
+// Enhanced planet with realistic features
 const EnhancedPlanet = ({
   position,
   size,
@@ -183,6 +150,7 @@ const EnhancedPlanet = ({
   
   return (
     <group position={position}>
+      {/* Main planet */}
       <mesh ref={planetRef}>
         <sphereGeometry args={[size, 64, 64]} />
         <meshStandardMaterial
@@ -194,6 +162,7 @@ const EnhancedPlanet = ({
         />
       </mesh>
       
+      {/* Atmosphere */}
       {atmosphereColor && (
         <mesh ref={atmosphereRef}>
           <sphereGeometry args={[size * 1.05, 32, 32]} />
@@ -206,6 +175,7 @@ const EnhancedPlanet = ({
         </mesh>
       )}
       
+      {/* Surface details */}
       {type === 'data' && (
         <group>
           {Array.from({ length: 20 }).map((_, i) => {
@@ -229,6 +199,7 @@ const EnhancedPlanet = ({
         </group>
       )}
       
+      {/* Wireframe overlay for tech planet */}
       {type === 'tech' && (
         <mesh>
           <sphereGeometry args={[size * 1.001, 32, 32]} />
@@ -241,6 +212,7 @@ const EnhancedPlanet = ({
         </mesh>
       )}
       
+      {/* Planetary rings */}
       {hasRings && (
         <group rotation={[Math.PI / 6, 0, 0]}>
           <PlanetaryRings
@@ -263,6 +235,27 @@ const EnhancedPlanet = ({
   );
 };
 
+// Simple smooth camera system
+const SmoothCamera = ({ scrollProgress }: { scrollProgress: number }) => {
+  useFrame((state) => {
+    const progress = Math.min(Math.max(scrollProgress, 0), 1);
+    
+    // Simple linear interpolation for camera position
+    const startPos = new THREE.Vector3(0, 2, 12);
+    const endPos = new THREE.Vector3(0, 0, -30);
+    const currentPos = startPos.lerp(endPos, progress);
+    
+    // Smooth camera movement
+    state.camera.position.lerp(currentPos, 0.05);
+    
+    // Simple look-at that follows the journey
+    const lookAtTarget = new THREE.Vector3(0, 0, -progress * 20);
+    state.camera.lookAt(lookAtTarget);
+  });
+  
+  return null;
+};
+
 const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({ 
   children, 
   scrollProgress 
@@ -275,6 +268,7 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
       if (sceneTargetRef.current) {
         (window as any).__GLOBAL_3D_SCENE_TARGET__ = sceneTargetRef.current;
         setIsReady(true);
+        console.log('🌌 Classic Interstellar Journey Ready!');
       }
     }, 100);
 
@@ -286,6 +280,7 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
 
   return (
     <>
+      {/* 3D Space Background */}
       <div 
         style={{ 
           position: 'fixed', 
@@ -301,14 +296,15 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
           camera={{ position: [0, 2, 12], fov: 75 }}
           style={{ width: '100%', height: '100%' }}
           onCreated={(state) => {
-            console.log('🛸 Improved Journey Canvas created!');
+            console.log('🌌 Classic Journey Canvas created!');
             state.gl.setClearColor(0x000008, 1);
             state.gl.shadowMap.enabled = true;
             state.gl.shadowMap.type = THREE.PCFSoftShadowMap;
           }}
         >
-          <ImprovedCamera scrollProgress={scrollProgress} />
+          <SmoothCamera scrollProgress={scrollProgress} />
           
+          {/* Classic lighting */}
           <ambientLight intensity={0.1} />
           <directionalLight 
             position={[10, 10, 5]} 
@@ -319,6 +315,7 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
           <pointLight position={[-20, 0, -10]} intensity={0.3} color="#4A90E2" />
           <pointLight position={[20, 10, -30]} intensity={0.2} color="#E24A4A" />
           
+          {/* Classic drei Stars */}
           <Stars
             radius={100}
             depth={50}
@@ -328,6 +325,7 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
             fade
           />
           
+          {/* Enhanced planets with proper scale and positioning */}
           <EnhancedPlanet
             position={[-8, 2, -15]}
             size={1.8}
@@ -354,10 +352,12 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
             atmosphereColor="#A78BFA"
           />
           
+          {/* Charging station portal */}
           <group ref={sceneTargetRef} position={[0, -1, 0]} scale={0.3} />
         </Canvas>
       </div>
       
+      {/* Main content */}
       <div style={{ position: 'relative', zIndex: 1 }}>
         {children}
       </div>
@@ -365,4 +365,4 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
   );
 };
 
-export default InterstellarJourney;
+export default InterstellarJourney; 
