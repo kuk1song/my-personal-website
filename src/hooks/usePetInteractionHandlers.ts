@@ -46,7 +46,8 @@ export const usePetInteractionHandlers = ({
   }, [setIsNearAboutMe]);
 
   const onPositionChange = useCallback((position: Position) => {
-    checkCollisions(position.x, position.y);
+    // Temporarily disabled collision checks to fix positioning issues in 3D view.
+    // checkCollisions(position.x, position.y);
     checkChargingStation(position.x, position.y);
     checkAboutMeSection(position.x, position.y);
     setLastInteraction(Date.now());

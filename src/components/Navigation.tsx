@@ -1,18 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Code } from 'lucide-react';
 
 const Navigation = () => {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const navItems = [
     { label: 'Home', href: '#home' },
     { label: 'About Me', href: '#about' },
@@ -20,9 +9,10 @@ const Navigation = () => {
   ];
 
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-      scrolled ? 'bg-[#030637]/80 backdrop-blur-lg border-b border-[#48CAE4]/20' : 'bg-transparent'
-    }`}>
+    <nav 
+      id="main-nav" 
+      className="fixed top-0 w-full z-50 transition-all duration-500 bg-transparent"
+    >
       <div className="container mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center">

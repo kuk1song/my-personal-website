@@ -12,21 +12,31 @@ interface InterstellarJourneyProps {
 const PerfectMirrorCamera = ({ scrollProgress }: { scrollProgress: number }) => {
   const currentLookAtRef = useRef(new THREE.Vector3(0, 0, 2));
   
-  // 定义完整的路径点
+  // Slower and More Cinematic Path
   const pathPoints = React.useMemo(() => [
-    new THREE.Vector3(0, 2, 12),      // 0: Hero start
-    new THREE.Vector3(-4, 2, 4),      // 1: 向蓝色区域
-    new THREE.Vector3(-8, 2, -8),     // 2: 接近蓝色星球
-    new THREE.Vector3(-12, 2, -20),   // 3: 蓝色星球左侧
-    new THREE.Vector3(-6, 0, -28),    // 4: 离开蓝色，转向红色
-    new THREE.Vector3(6, -1, -32),    // 5: 接近红色星球
-    new THREE.Vector3(16, -1, -38),   // 6: 红色星球右侧
-    new THREE.Vector3(20, -1, -40),   // 7: 离开红色
-    new THREE.Vector3(19, 2, -50),    // 8: 转向紫色
-    new THREE.Vector3(18, 6, -68)     // 9: 紫色星球终点
+    new THREE.Vector3(0, 2, 12),      // 0. Start
+    new THREE.Vector3(-4, 2, 4),      // 1. Veer towards blue
+    new THREE.Vector3(-8, 2, -8),     // 2. Approach blue
+    new THREE.Vector3(-12, 2, -20),   // 3. Pass blue
+    new THREE.Vector3(-6, 0, -32),    // 4. Deeper transition space
+
+    // Red Planet Fly-by: A wider, more graceful arc
+    new THREE.Vector3(10, -2, -40),   // 5. Approach red from a distance
+    new THREE.Vector3(18, -1, -45),   // 6. Sweep past the right side of the red planet
+    new THREE.Vector3(22, 1, -50),    // 7. Exit the arc, looking ahead to purple
+
+    // Purple Planet Landing: A high-angle dive for dramatic effect
+    new THREE.Vector3(20, 10, -65),   // 8. High approach, viewing purple from above
+    new THREE.Vector3(18.5, 8, -68),  // 9. Begin the "dive"
+    new THREE.Vector3(18.2, 7.5, -70),// 10. Accelerate towards the surface
+    new THREE.Vector3(18, 7.2, -71.5),// 11. Final landing position, very close
   ], []);
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
+    // Slower, smoother camera movement
+    const smoothing = 3.0;
+    const lerpFactor = 1.0 - Math.exp(-smoothing * delta);
+
     const progress = Math.min(Math.max(scrollProgress, 0), 1);
     
     // 将进度映射到路径点
@@ -43,9 +53,17 @@ const PerfectMirrorCamera = ({ scrollProgress }: { scrollProgress: number }) => 
     const nextPoint = pathPoints[nextIndex];
     const targetPos = new THREE.Vector3().lerpVectors(currentPoint, nextPoint, segmentProgress);
     
-    // 非常温和的移动
-    state.camera.position.lerp(targetPos, 0.02);
+    // Use the frame-rate independent lerp factor
+    state.camera.position.lerp(targetPos, lerpFactor);
     
+    // Adjust FOV effect for the new path timing
+    const landingProgress = Math.max(0, (progress - 0.75) / 0.25); // Starts later in the scroll
+    const baseFov = 75;
+    const warpFov = 95;
+    const camera = state.camera as THREE.PerspectiveCamera;
+    camera.fov = baseFov + (warpFov - baseFov) * Math.sin(landingProgress * Math.PI);
+    camera.updateProjectionMatrix();
+
     // 修复向右转问题：使用更稳定的前瞻计算
     const targetLookAt = new THREE.Vector3(
       targetPos.x * 0.05,  // 减少水平偏移
@@ -54,7 +72,7 @@ const PerfectMirrorCamera = ({ scrollProgress }: { scrollProgress: number }) => 
     );
     
     // 平滑的视角过渡，避免突然转向
-    currentLookAtRef.current.lerp(targetLookAt, 0.01); // 非常慢的视角变化
+    currentLookAtRef.current.lerp(targetLookAt, lerpFactor / 2); // Slower look-at
     state.camera.lookAt(currentLookAtRef.current);
   });
   

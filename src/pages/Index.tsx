@@ -49,6 +49,13 @@ const Index = () => {
         }
       });
 
+      // Animate Nav Bar background
+      tl.to('#main-nav', { 
+        backgroundColor: 'rgba(3, 6, 55, 0.8)',
+        backdropFilter: 'blur(12px)',
+        ease: 'power2.inOut' 
+      }, 0); // Start at the very beginning of the timeline
+
       // 1. Animate Hero Section OUT (Zoom Through) - "Departing Home Planet"
       tl.to('#hero-content', { 
         scale: 2, 
