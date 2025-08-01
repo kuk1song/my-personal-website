@@ -9,29 +9,9 @@ interface InterstellarJourneyProps {
 }
 
 // 修复向右转问题的镜像相机系统
-const PerfectMirrorCamera = ({ scrollProgress }: { scrollProgress: number }) => {
+const PerfectMirrorCamera = ({ scrollProgress, pathPoints }: { scrollProgress: number; pathPoints: THREE.Vector3[] }) => {
   const currentLookAtRef = useRef(new THREE.Vector3(0, 0, 2));
   
-  // Slower and More Cinematic Path
-  const pathPoints = React.useMemo(() => [
-    new THREE.Vector3(0, 2, 12),      // 0. Start
-    new THREE.Vector3(-4, 2, 4),      // 1. Veer towards blue
-    new THREE.Vector3(-8, 2, -8),     // 2. Approach blue
-    new THREE.Vector3(-12, 2, -20),   // 3. Pass blue
-    new THREE.Vector3(-6, 0, -32),    // 4. Deeper transition space
-
-    // Red Planet Fly-by: A wider, more graceful arc
-    new THREE.Vector3(10, -2, -40),   // 5. Approach red from a distance
-    new THREE.Vector3(18, -1, -45),   // 6. Sweep past the right side of the red planet
-    new THREE.Vector3(22, 1, -50),    // 7. Exit the arc, looking ahead to purple
-
-    // Purple Planet Landing: A high-angle dive for dramatic effect
-    new THREE.Vector3(20, 10, -65),   // 8. High approach, viewing purple from above
-    new THREE.Vector3(18.5, 8, -68),  // 9. Begin the "dive"
-    new THREE.Vector3(18.2, 7.5, -70),// 10. Accelerate towards the surface
-    new THREE.Vector3(18, 7.2, -71.5),// 11. Final landing position, very close
-  ], []);
-
   useFrame((state, delta) => {
     // Slower, smoother camera movement
     const smoothing = 3.0;
@@ -77,6 +57,49 @@ const PerfectMirrorCamera = ({ scrollProgress }: { scrollProgress: number }) => 
   });
   
   return null;
+};
+
+// 🎯 NEW: Path Visualization Component
+const PathVisualizer = ({ pathPoints }: { pathPoints: THREE.Vector3[] }) => {
+  const pathGeometry = React.useMemo(() => {
+    const geometry = new THREE.BufferGeometry();
+    const positions = [];
+    
+    // Create a smooth curve through all path points
+    for (let i = 0; i < pathPoints.length - 1; i++) {
+      const current = pathPoints[i];
+      const next = pathPoints[i + 1];
+      
+      // Add intermediate points for smoother visualization
+      for (let t = 0; t <= 1; t += 0.1) {
+        const point = new THREE.Vector3().lerpVectors(current, next, t);
+        positions.push(point.x, point.y, point.z);
+      }
+    }
+    
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    return geometry;
+  }, [pathPoints]);
+  
+  return (
+    <primitive object={new THREE.Line(pathGeometry, new THREE.LineBasicMaterial({ color: '#00FF00' }))} />
+  );
+};
+
+// 🎯 NEW: Path Points Markers
+const PathMarkers = ({ pathPoints }: { pathPoints: THREE.Vector3[] }) => {
+  return (
+    <group>
+      {pathPoints.map((point, index) => (
+        <mesh key={index} position={[point.x, point.y, point.z]}>
+          <sphereGeometry args={[0.5, 8, 8]} />
+          <meshBasicMaterial 
+            color={index === 0 ? "#00FF00" : index === pathPoints.length - 1 ? "#FF0000" : "#FFFF00"} 
+          />
+        </mesh>
+      ))}
+    </group>
+  );
 };
 
 // 保留您优化的星球系统
@@ -301,6 +324,28 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
 }) => {
   const sceneTargetRef = useRef<THREE.Group>(null);
   const [isReady, setIsReady] = useState(false);
+  const [showPathTools, setShowPathTools] = useState(true); // 🎯 Toggle for development
+
+  // Extract pathPoints to share between camera and visualizer
+  const pathPoints = React.useMemo(() => [
+    new THREE.Vector3(0, 2, 12),      // 0. Start
+    new THREE.Vector3(-4, 2, 4),      // 1. Veer towards blue
+    new THREE.Vector3(-8, 2, -8),     // 2. Approach blue
+    new THREE.Vector3(-12, 2, -20),   // 3. Pass blue
+    new THREE.Vector3(6, 0, -32),    // 4. Deeper transition space
+    new THREE.Vector3(16, 0, -32),
+
+    // Red Planet Fly-by: A wider, more graceful arc
+    new THREE.Vector3(10, -2, -40),   // 5. Approach red from a distance
+    new THREE.Vector3(18, -1, -45),   // 6. Sweep past the right side of the red planet
+    new THREE.Vector3(22, 1, -50),    // 7. Exit the arc, looking ahead to purple
+
+    // Purple Planet Landing: A high-angle dive for dramatic effect
+    new THREE.Vector3(20, 10, -65),   // 8. High approach, viewing purple from above
+    new THREE.Vector3(18.5, 8, -68),  // 9. Begin the "dive"
+    new THREE.Vector3(18.2, 7.5, -70),// 10. Accelerate towards the surface
+    new THREE.Vector3(18, 7.2, -71.5),// 11. Final landing position, very close
+  ], []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -339,7 +384,15 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
             state.gl.shadowMap.type = THREE.PCFSoftShadowMap;
           }}
         >
-          <PerfectMirrorCamera scrollProgress={scrollProgress} />
+          <PerfectMirrorCamera scrollProgress={scrollProgress} pathPoints={pathPoints} />
+          
+          {/* 🎯 NEW: Development Tools - Remove these when satisfied */}
+          {showPathTools && (
+            <>
+              <PathVisualizer pathPoints={pathPoints} />
+              <PathMarkers pathPoints={pathPoints} />
+            </>
+          )}
           
           <ambientLight intensity={0.1} />
           <directionalLight 
