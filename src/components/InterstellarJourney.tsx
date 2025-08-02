@@ -9,24 +9,33 @@ interface InterstellarJourneyProps {
 }
 
 // 修复向右转问题的镜像相机系统
-const PerfectMirrorCamera = ({ 
-  scrollProgress, 
-  pathPoints, 
-  calculateLookAtTarget 
-}: { 
+const PerfectMirrorCamera = ({ scrollProgress, pathPoints, calculateLookAtTarget }: { 
   scrollProgress: number; 
   pathPoints: THREE.Vector3[]; 
   calculateLookAtTarget: (point: THREE.Vector3, index: number) => THREE.Vector3;
 }) => {
   const currentLookAtRef = useRef(new THREE.Vector3(0, 0, 2));
+  const lastProgressRef = useRef(0);
   
   useFrame((state, delta) => {
-    // Slower, smoother camera movement
-    const smoothing = 2.0;
-    const lerpFactor = 1.0 - Math.exp(-smoothing * delta);
-
     const progress = Math.min(Math.max(scrollProgress, 0), 1);
     
+    // 🎯 NEW: Anti-jitter system - only smooth micro-movements
+    const progressDiff = Math.abs(progress - lastProgressRef.current);
+    
+    // Apply adaptive smoothing based on scroll speed
+    let adaptiveSmoothing = 1.5;
+    if (progressDiff > 0.01) {
+      // Fast scrolling - reduce smoothing to keep up
+      adaptiveSmoothing = 0.8;
+    } else if (progressDiff < 0.001) {
+      // Very slow/stopped - increase smoothing for stability
+      adaptiveSmoothing = 3.0;
+    }
+    
+    const lerpFactor = 1.0 - Math.exp(-adaptiveSmoothing * delta);
+    lastProgressRef.current = progress;
+
     // 将进度映射到路径点
     const totalSegments = pathPoints.length - 1;
     const segmentIndex = Math.floor(progress * totalSegments);
@@ -41,11 +50,11 @@ const PerfectMirrorCamera = ({
     const nextPoint = pathPoints[nextIndex];
     const targetPos = new THREE.Vector3().lerpVectors(currentPoint, nextPoint, segmentProgress);
     
-    // Use the frame-rate independent lerp factor
+    // Use adaptive smoothing for position
     state.camera.position.lerp(targetPos, lerpFactor);
     
     // Adjust FOV effect for the new path timing
-    const landingProgress = Math.max(0, (progress - 0.75) / 0.25); // Starts later in the scroll
+    const landingProgress = Math.max(0, (progress - 0.75) / 0.25);
     const baseFov = 75;
     const warpFov = 95;
     const camera = state.camera as THREE.PerspectiveCamera;
@@ -57,8 +66,8 @@ const PerfectMirrorCamera = ({
     const nextLookAt = calculateLookAtTarget(nextPoint, nextIndex);
     const targetLookAt = new THREE.Vector3().lerpVectors(currentLookAt, nextLookAt, segmentProgress);
     
-    // 平滑的视角过渡，避免突然转向
-    currentLookAtRef.current.lerp(targetLookAt, lerpFactor / 2); // Slower look-at
+    // 平滑的视角过渡，避免突然转向 - 使用自适应平滑
+    currentLookAtRef.current.lerp(targetLookAt, lerpFactor * 0.7);
     state.camera.lookAt(currentLookAtRef.current);
   });
   

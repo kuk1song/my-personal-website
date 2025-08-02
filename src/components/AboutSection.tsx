@@ -49,7 +49,7 @@ const AboutSection = () => {
             {/* Horizontal rule for visual separation */}
             <hr className="border-t border-[#48CAE4]/20 my-8" />
 
-            <div>
+            {/* <div>
               <p className="text-xl text-[#CAF0F8] mb-6 font-mono leading-relaxed">
                 Hi! I am a Software Engineer focused on AI-native Product Development, Agentic Workflows and Full-Stack delivery. 
               </p>
@@ -61,7 +61,7 @@ const AboutSection = () => {
               <p className="text-xl text-[#CAF0F8] mb-8 font-mono leading-relaxed">
                 My mission is to build systems that ship, evolve, and create real value for users!
               </p>
-            </div>
+            </div> */}
             
             <div className="space-y-2 font-mono text-sm text-[#48CAE4]/90">
               <div>
