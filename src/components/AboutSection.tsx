@@ -28,20 +28,20 @@ const AboutSection = () => {
               <div className="relative text-lg md:text-xl">
                 {/* Base Layer */}
                 <div className="cyberpunk-title flex flex-wrap items-center font-mono">
-                  <p className="text-gradient">AI Product Engineer</p>
-                  <p className="ml-3 text-[#48CAE4]/80 italic">&lt;Full-Stack LLM & Agentic Workflows&gt;</p>
+                  <p className="text-gradient">AI Full-Stack Engineer</p>
+                  <p className="ml-3 text-[#48CAE4]/80 italic">&lt;AI-Native/Powered Product & Agentic Workflows&gt;</p>
                 </div>
                 
                 {/* Glitch Layer 1 (Red) */}
                 <div className="cyberpunk-glitch-left absolute top-0 left-0 flex flex-wrap items-center font-mono text-[#ff0040] opacity-20">
-                  <p>AI Product Engineer</p>
-                  <p className="ml-3 italic">&lt;Full-Stack LLM & Agentic Workflows&gt;</p>
+                  <p>AI Full-Stack Engineer</p>
+                  <p className="ml-3 italic">&lt;AI-Native/Powered Product & Agentic Workflows&gt;</p>
                 </div>
 
                 {/* Glitch Layer 2 (Green) */}
                 <div className="cyberpunk-glitch-2-left absolute top-0 left-0 flex flex-wrap items-center font-mono text-[#00ff88] opacity-20">
-                  <p>AI Product Engineer</p>
-                  <p className="ml-3 italic">&lt;Full-Stack LLM & Agentic Workflows&gt;</p>
+                  <p>AI Full-Stack Engineer</p>
+                  <p className="ml-3 italic">&lt;AI-Native/Powered Product & Agentic Workflows&gt;</p>
                 </div>
               </div>
             </div>

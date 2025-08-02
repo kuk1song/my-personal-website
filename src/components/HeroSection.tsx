@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const HeroSection = () => {
   const [isGlowing, setIsGlowing] = useState(false);
-  
+
   // Listen for pet collision and leave events
   useEffect(() => {
     const handlePetCollision = (event: CustomEvent) => {
@@ -46,17 +46,26 @@ const HeroSection = () => {
         
         <div className="relative mb-8">
           <h1 
-            className={`text-6xl md:text-7xl lg:text-8xl font-thin text-gradient tracking-widest font-fira cyberpunk-title relative transition-all duration-300 ${
+            style={{ fontFamily: '"Jura", sans-serif' }}
+            className={`text-6xl md:text-7xl font-thin text-gradient tracking-widest cyberpunk-title relative transition-all duration-300 ${
               isGlowing ? 'title-bright-glow' : ''
             }`}
           >
             Hey Human
           </h1>
           {/* Glitch effect overlay */}
-          <h1 className="absolute top-0 left-1/2 transform -translate-x-1/2 text-6xl md:text-7xl lg:text-8xl font-thin tracking-widest font-fira text-[#ff0040] opacity-20 cyberpunk-glitch">
+          <h1 
+            style={{ fontFamily: '"Jura", sans-serif' }}
+            className="absolute top-0 left-1/2 transform -translate-x-1/2 text-6xl md:text-7xl font-thin tracking-widest text-[#ff0040] opacity-20 cyberpunk-glitch"
+            aria-hidden="true"
+          >
             Hey Human
           </h1>
-          <h1 className="absolute top-0 left-1/2 transform -translate-x-1/2 text-6xl md:text-7xl lg:text-8xl font-thin tracking-widest font-fira text-[#00ff88] opacity-20 cyberpunk-glitch-2">
+          <h1 
+            style={{ fontFamily: '"Jura", sans-serif' }}
+            className="absolute top-0 left-1/2 transform -translate-x-1/2 text-6xl md:text-7xl font-thin tracking-widest text-[#00ff88] opacity-20 cyberpunk-glitch-2"
+            aria-hidden="true"
+          >
             Hey Human
           </h1>
         </div>
