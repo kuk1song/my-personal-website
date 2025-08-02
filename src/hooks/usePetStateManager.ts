@@ -14,8 +14,8 @@ interface UsePetStateManagerProps {
 export const usePetStateManager = ({ onStateChange }: UsePetStateManagerProps) => {
   const [mood, setMood] = useState('happy');
   const [lastInteraction, setLastInteraction] = useState(Date.now());
-  const [isVisible, setIsVisible] = useState(true);
-  const [customMessage, setCustomMessage] = useState<string | undefined>('Hi! Are you also Song\'s friend?');
+  const [isVisible, setIsVisible] = useState(false); // Default to hidden
+  const [customMessage, setCustomMessage] = useState<string | null>(null);
   const [isNearAboutMe, setIsNearAboutMe] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
 
