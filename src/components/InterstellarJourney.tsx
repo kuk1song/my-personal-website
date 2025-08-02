@@ -22,7 +22,7 @@ const PerfectMirrorCamera = ({
   
   useFrame((state, delta) => {
     // Slower, smoother camera movement
-    const smoothing = 3.0;
+    const smoothing = 2.0;
     const lerpFactor = 1.0 - Math.exp(-smoothing * delta);
 
     const progress = Math.min(Math.max(scrollProgress, 0), 1);
@@ -442,7 +442,7 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
 }) => {
   const sceneTargetRef = useRef<THREE.Group>(null);
   const [isReady, setIsReady] = useState(false);
-  const [showPathTools, setShowPathTools] = useState(true); // 🎯 Toggle for development
+  const [showPathTools, setShowPathTools] = useState(false); // 🎯 Toggle for development
 
   // Extract pathPoints to share between camera and visualizer
   const pathPoints = React.useMemo(() => [
@@ -451,7 +451,7 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
     new THREE.Vector3(-8, 2, -8),     // 2. Approach blue
     new THREE.Vector3(-12, 2, -20),   // 3. Pass blue
     new THREE.Vector3(6, 0, -32),    // 4. Deeper transition space
-    new THREE.Vector3(16, -8, -32),
+    new THREE.Vector3(19, -8, -32),
 
     // Red Planet Fly-by: A wider, more graceful arc
     new THREE.Vector3(10, -2, -40),   // 5. Approach red from a distance
@@ -459,7 +459,7 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
     new THREE.Vector3(22, 1, -50),    // 7. Exit the arc, looking ahead to purple
 
     // Purple Planet Landing: A high-angle dive for dramatic effect
-    new THREE.Vector3(20, 10, -65),   // 8. High approach, viewing purple from above
+    new THREE.Vector3(20, 9, -66),   // 8. High approach, viewing purple from above
     new THREE.Vector3(18.5, 8, -68),  // 9. Begin the "dive"
     new THREE.Vector3(18.2, 7.5, -70),// 10. Accelerate towards the surface
     new THREE.Vector3(18, 7.2, -71.5),// 11. Final landing position, very close
@@ -483,7 +483,7 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
     // Index 9-11: Simplified purple planet approach (removed extra directions)
     new THREE.Vector3(18, 8, -65),    // 9. Look at purple planet
     new THREE.Vector3(18, 8, -55),    // 10. Keep looking at purple planet
-    new THREE.Vector3(18, 8, 0),    // 11. Final gaze at purple planet
+    new THREE.Vector3(15, 8, 0),    // 11. Final gaze at purple planet
 
     new THREE.Vector3(18, 8, 0), // 11. Use default (final approach)
   ], []);
