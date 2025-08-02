@@ -92,17 +92,32 @@ const PathVisualizer = ({ pathPoints }: { pathPoints: THREE.Vector3[] }) => {
   );
 };
 
-// 🎯 NEW: Path Points Markers
+// 🎯 NEW: Path Points Markers with Numbers
 const PathMarkers = ({ pathPoints }: { pathPoints: THREE.Vector3[] }) => {
   return (
     <group>
       {pathPoints.map((point, index) => (
-        <mesh key={index} position={[point.x, point.y, point.z]}>
-          <sphereGeometry args={[0.5, 8, 8]} />
-          <meshBasicMaterial 
-            color={index === 0 ? "#00FF00" : index === pathPoints.length - 1 ? "#FF0000" : "#FFFF00"} 
-          />
-        </mesh>
+        <group key={index} position={[point.x, point.y, point.z]}>
+          {/* Main marker sphere - smaller and more refined */}
+          <mesh>
+            <sphereGeometry args={[0.3, 16, 16]} />
+            <meshBasicMaterial 
+              color={index === 0 ? "#00FF00" : index === pathPoints.length - 1 ? "#FF0000" : "#FFDD00"} 
+            />
+          </mesh>
+          
+          {/* Number label */}
+          <mesh position={[0, 0.8, 0]}>
+            <planeGeometry args={[0.8, 0.8]} />
+            <meshBasicMaterial 
+              color="#000000" 
+              transparent 
+              opacity={0.8}
+            />
+          </mesh>
+          
+          {/* 3D Text would be complex, so we'll use a simple approach with HTML overlay */}
+        </group>
       ))}
     </group>
   );
@@ -369,10 +384,10 @@ const LookAtVisualizer = ({
     return new THREE.ArrowHelper(
       new THREE.Vector3(0, 0, -1), // direction
       new THREE.Vector3(0, 0, 0),  // origin
-      10, // length
-      0xff0000, // color (red)
-      3, // headLength
-      1  // headWidth
+      8, // length - slightly smaller
+      0xFF3333, // brighter red color
+      2, // headLength - more refined
+      0.8  // headWidth - more refined
     );
   }, []);
   
@@ -401,10 +416,10 @@ const StaticLookPreview = ({
       return new THREE.ArrowHelper(
         direction,
         point,
-        8, // length
-        0x00ffff, // cyan color
-        2, // headLength
-        0.8 // headWidth
+        5, // length - made smaller
+        0x00DDFF, // brighter cyan color
+        1.5, // headLength - more refined
+        0.6 // headWidth - more refined
       );
     });
   }, [pathPoints, calculateLookAtTarget]);
@@ -457,18 +472,20 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
     null, // 1. Use default  
     null, // 2. Use default
     null, // 3. Use default
-    null, // 4. Use default
-    null, // 5. Use default
+    new THREE.Vector3(12, -3, -35), // 4. Use default
+    new THREE.Vector3(12, -3, -35), // 5. Use default
 
     // Index 6-8: Custom directions for red planet fly-by
     new THREE.Vector3(12, -3, -35),   // 6. Look directly at red planet
     new THREE.Vector3(12, -3, -35),   // 7. Keep looking at red planet
     new THREE.Vector3(18, 8, -65),    // 8. Start looking toward purple planet
 
-    // Index 9-11: Custom directions for purple planet approach
+    // Index 9-11: Simplified purple planet approach (removed extra directions)
     new THREE.Vector3(18, 8, -65),    // 9. Look at purple planet
-    new THREE.Vector3(18, 8, -65),    // 10. Keep looking at purple planet
-    new THREE.Vector3(18, 8, -65),    // 11. Final gaze at purple planet
+    new THREE.Vector3(18, 8, -55),    // 10. Keep looking at purple planet
+    new THREE.Vector3(18, 8, 0),    // 11. Final gaze at purple planet
+
+    new THREE.Vector3(18, 8, 0), // 11. Use default (final approach)
   ], []);
 
   // 🎯 Helper function to calculate look-at target for any path point
@@ -583,6 +600,44 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
           <group ref={sceneTargetRef} position={[0, -1, 0]} scale={0.3} />
         </Canvas>
       </div>
+      
+      {/* 🎯 NEW: HTML Overlay for Path Point Numbers */}
+      {showPathTools && (
+        <div style={{ 
+          position: 'fixed', 
+          top: 20, 
+          left: 20, 
+          zIndex: 100,
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          color: '#00DDFF',
+          padding: '10px 15px',
+          borderRadius: '8px',
+          fontFamily: 'monospace',
+          fontSize: '12px',
+          maxWidth: '300px'
+        }}>
+          <div style={{ marginBottom: '8px', fontWeight: 'bold' }}>🎯 Path Points Reference:</div>
+          {pathPoints.map((point, index) => (
+            <div key={index} style={{ marginBottom: '2px' }}>
+              <span style={{ 
+                color: index === 0 ? "#00FF00" : index === pathPoints.length - 1 ? "#FF0000" : "#FFDD00",
+                fontWeight: 'bold',
+                marginRight: '8px'
+              }}>
+                {index}:
+              </span>
+              <span style={{ fontSize: '11px' }}>
+                ({point.x.toFixed(1)}, {point.y.toFixed(1)}, {point.z.toFixed(1)})
+                {customLookAtTargets[index] ? ' [Custom Look]' : ' [Auto Look]'}
+              </span>
+            </div>
+          ))}
+          <div style={{ marginTop: '8px', fontSize: '10px', opacity: 0.7 }}>
+            🔴 Red Arrow: Current Camera Direction<br/>
+            🔵 Blue Arrows: Static Look Directions
+          </div>
+        </div>
+      )}
       
       <div style={{ position: 'relative', zIndex: 1 }}>
         {children}
