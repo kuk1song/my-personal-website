@@ -9,7 +9,15 @@ interface InterstellarJourneyProps {
 }
 
 // 修复向右转问题的镜像相机系统
-const PerfectMirrorCamera = ({ scrollProgress, pathPoints }: { scrollProgress: number; pathPoints: THREE.Vector3[] }) => {
+const PerfectMirrorCamera = ({ 
+  scrollProgress, 
+  pathPoints, 
+  calculateLookAtTarget 
+}: { 
+  scrollProgress: number; 
+  pathPoints: THREE.Vector3[]; 
+  calculateLookAtTarget: (point: THREE.Vector3, index: number) => THREE.Vector3;
+}) => {
   const currentLookAtRef = useRef(new THREE.Vector3(0, 0, 2));
   
   useFrame((state, delta) => {
@@ -44,12 +52,10 @@ const PerfectMirrorCamera = ({ scrollProgress, pathPoints }: { scrollProgress: n
     camera.fov = baseFov + (warpFov - baseFov) * Math.sin(landingProgress * Math.PI);
     camera.updateProjectionMatrix();
 
-    // 修复向右转问题：使用更稳定的前瞻计算
-    const targetLookAt = new THREE.Vector3(
-      targetPos.x * 0.05,  // 减少水平偏移
-      targetPos.y * 0.05,  // 减少垂直偏移  
-      targetPos.z - 15     // 固定前瞻距离
-    );
+    // 🎯 NEW: Use interpolated look-at targets between path points
+    const currentLookAt = calculateLookAtTarget(currentPoint, currentIndex);
+    const nextLookAt = calculateLookAtTarget(nextPoint, nextIndex);
+    const targetLookAt = new THREE.Vector3().lerpVectors(currentLookAt, nextLookAt, segmentProgress);
     
     // 平滑的视角过渡，避免突然转向
     currentLookAtRef.current.lerp(targetLookAt, lerpFactor / 2); // Slower look-at
@@ -319,7 +325,15 @@ const EnhancedPlanet = ({
 };
 
 // 🎯 NEW: Camera Look Direction Visualizer
-const LookAtVisualizer = ({ pathPoints, scrollProgress }: { pathPoints: THREE.Vector3[]; scrollProgress: number }) => {
+const LookAtVisualizer = ({ 
+  pathPoints, 
+  scrollProgress, 
+  calculateLookAtTarget 
+}: { 
+  pathPoints: THREE.Vector3[]; 
+  scrollProgress: number;
+  calculateLookAtTarget: (point: THREE.Vector3, index: number) => THREE.Vector3;
+}) => {
   const arrowRef = useRef<THREE.ArrowHelper>();
   
   useFrame(() => {
@@ -336,12 +350,10 @@ const LookAtVisualizer = ({ pathPoints, scrollProgress }: { pathPoints: THREE.Ve
     const nextPoint = pathPoints[nextIndex];
     const currentPos = new THREE.Vector3().lerpVectors(currentPoint, nextPoint, segmentProgress);
     
-    // Calculate look-at target (same as in PerfectMirrorCamera)
-    const targetLookAt = new THREE.Vector3(
-      currentPos.x * 0.05,
-      currentPos.y * 0.05,
-      currentPos.z - 15
-    );
+    // 🎯 NEW: Use the same interpolated look-at logic as the camera
+    const currentLookAt = calculateLookAtTarget(currentPoint, currentIndex);
+    const nextLookAt = calculateLookAtTarget(nextPoint, nextIndex);
+    const targetLookAt = new THREE.Vector3().lerpVectors(currentLookAt, nextLookAt, segmentProgress);
     
     // Update current camera direction arrow
     if (arrowRef.current) {
@@ -373,16 +385,17 @@ const LookAtVisualizer = ({ pathPoints, scrollProgress }: { pathPoints: THREE.Ve
 };
 
 // 🎯 NEW: Static Look Direction Preview for All Path Points
-const StaticLookPreview = ({ pathPoints }: { pathPoints: THREE.Vector3[] }) => {
+const StaticLookPreview = ({ 
+  pathPoints, 
+  calculateLookAtTarget 
+}: { 
+  pathPoints: THREE.Vector3[];
+  calculateLookAtTarget: (point: THREE.Vector3, index: number) => THREE.Vector3;
+}) => {
   const previewArrows = React.useMemo(() => {
     return pathPoints.map((point, index) => {
-      // Calculate what the look-at target would be at this point
-      const lookAt = new THREE.Vector3(
-        point.x * 0.05,
-        point.y * 0.05,
-        point.z - 15
-      );
-      
+      // 🎯 NEW: Use the custom look-at calculation
+      const lookAt = calculateLookAtTarget(point, index);
       const direction = new THREE.Vector3().subVectors(lookAt, point).normalize();
       
       return new THREE.ArrowHelper(
@@ -394,7 +407,7 @@ const StaticLookPreview = ({ pathPoints }: { pathPoints: THREE.Vector3[] }) => {
         0.8 // headWidth
       );
     });
-  }, [pathPoints]);
+  }, [pathPoints, calculateLookAtTarget]);
   
   return (
     <group>
@@ -423,7 +436,7 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
     new THREE.Vector3(-8, 2, -8),     // 2. Approach blue
     new THREE.Vector3(-12, 2, -20),   // 3. Pass blue
     new THREE.Vector3(6, 0, -32),    // 4. Deeper transition space
-    new THREE.Vector3(16, 0, -32),
+    new THREE.Vector3(16, -8, -32),
 
     // Red Planet Fly-by: A wider, more graceful arc
     new THREE.Vector3(10, -2, -40),   // 5. Approach red from a distance
@@ -436,6 +449,42 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
     new THREE.Vector3(18.2, 7.5, -70),// 10. Accelerate towards the surface
     new THREE.Vector3(18, 7.2, -71.5),// 11. Final landing position, very close
   ], []);
+
+  // 🎯 NEW: Custom Look-At Targets for Each Path Point
+  const customLookAtTargets = React.useMemo(() => [
+    // Index 0-5: Default forward-looking (蓝色星球区域)
+    null, // 0. Use default
+    null, // 1. Use default  
+    null, // 2. Use default
+    null, // 3. Use default
+    null, // 4. Use default
+    null, // 5. Use default
+
+    // Index 6-8: Custom directions for red planet fly-by
+    new THREE.Vector3(12, -3, -35),   // 6. Look directly at red planet
+    new THREE.Vector3(12, -3, -35),   // 7. Keep looking at red planet
+    new THREE.Vector3(18, 8, -65),    // 8. Start looking toward purple planet
+
+    // Index 9-11: Custom directions for purple planet approach
+    new THREE.Vector3(18, 8, -65),    // 9. Look at purple planet
+    new THREE.Vector3(18, 8, -65),    // 10. Keep looking at purple planet
+    new THREE.Vector3(18, 8, -65),    // 11. Final gaze at purple planet
+  ], []);
+
+  // 🎯 Helper function to calculate look-at target for any path point
+  const calculateLookAtTarget = React.useCallback((pathPoint: THREE.Vector3, index: number) => {
+    // If there's a custom target for this index, use it
+    if (customLookAtTargets[index]) {
+      return customLookAtTargets[index]!.clone();
+    }
+    
+    // Otherwise, use the default formula
+    return new THREE.Vector3(
+      pathPoint.x * 0.05,
+      pathPoint.y * 0.05,
+      pathPoint.z - 15
+    );
+  }, [customLookAtTargets]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -474,15 +523,15 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
             state.gl.shadowMap.type = THREE.PCFSoftShadowMap;
           }}
         >
-          <PerfectMirrorCamera scrollProgress={scrollProgress} pathPoints={pathPoints} />
+          <PerfectMirrorCamera scrollProgress={scrollProgress} pathPoints={pathPoints} calculateLookAtTarget={calculateLookAtTarget} />
           
           {/* 🎯 NEW: Development Tools - Remove these when satisfied */}
           {showPathTools && (
             <>
               <PathVisualizer pathPoints={pathPoints} />
               <PathMarkers pathPoints={pathPoints} />
-              <LookAtVisualizer pathPoints={pathPoints} scrollProgress={scrollProgress} />
-              <StaticLookPreview pathPoints={pathPoints} />
+              <LookAtVisualizer pathPoints={pathPoints} scrollProgress={scrollProgress} calculateLookAtTarget={calculateLookAtTarget} />
+              <StaticLookPreview pathPoints={pathPoints} calculateLookAtTarget={calculateLookAtTarget} />
             </>
           )}
           
