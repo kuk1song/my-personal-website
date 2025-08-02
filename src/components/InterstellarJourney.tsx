@@ -318,6 +318,96 @@ const EnhancedPlanet = ({
   );
 };
 
+// 🎯 NEW: Camera Look Direction Visualizer
+const LookAtVisualizer = ({ pathPoints, scrollProgress }: { pathPoints: THREE.Vector3[]; scrollProgress: number }) => {
+  const arrowRef = useRef<THREE.ArrowHelper>();
+  
+  useFrame(() => {
+    // Calculate current camera position and look-at target (same logic as PerfectMirrorCamera)
+    const progress = Math.min(Math.max(scrollProgress, 0), 1);
+    const totalSegments = pathPoints.length - 1;
+    const segmentIndex = Math.floor(progress * totalSegments);
+    const segmentProgress = (progress * totalSegments) - segmentIndex;
+    
+    const currentIndex = Math.min(segmentIndex, totalSegments - 1);
+    const nextIndex = Math.min(currentIndex + 1, totalSegments);
+    
+    const currentPoint = pathPoints[currentIndex];
+    const nextPoint = pathPoints[nextIndex];
+    const currentPos = new THREE.Vector3().lerpVectors(currentPoint, nextPoint, segmentProgress);
+    
+    // Calculate look-at target (same as in PerfectMirrorCamera)
+    const targetLookAt = new THREE.Vector3(
+      currentPos.x * 0.05,
+      currentPos.y * 0.05,
+      currentPos.z - 15
+    );
+    
+    // Update current camera direction arrow
+    if (arrowRef.current) {
+      const direction = new THREE.Vector3().subVectors(targetLookAt, currentPos).normalize();
+      arrowRef.current.position.copy(currentPos);
+      arrowRef.current.setDirection(direction);
+      arrowRef.current.setLength(10, 3, 1);
+    }
+  });
+  
+  // Create arrow helper outside of useFrame
+  const arrowHelper = React.useMemo(() => {
+    return new THREE.ArrowHelper(
+      new THREE.Vector3(0, 0, -1), // direction
+      new THREE.Vector3(0, 0, 0),  // origin
+      10, // length
+      0xff0000, // color (red)
+      3, // headLength
+      1  // headWidth
+    );
+  }, []);
+  
+  return (
+    <primitive 
+      ref={arrowRef}
+      object={arrowHelper}
+    />
+  );
+};
+
+// 🎯 NEW: Static Look Direction Preview for All Path Points
+const StaticLookPreview = ({ pathPoints }: { pathPoints: THREE.Vector3[] }) => {
+  const previewArrows = React.useMemo(() => {
+    return pathPoints.map((point, index) => {
+      // Calculate what the look-at target would be at this point
+      const lookAt = new THREE.Vector3(
+        point.x * 0.05,
+        point.y * 0.05,
+        point.z - 15
+      );
+      
+      const direction = new THREE.Vector3().subVectors(lookAt, point).normalize();
+      
+      return new THREE.ArrowHelper(
+        direction,
+        point,
+        8, // length
+        0x00ffff, // cyan color
+        2, // headLength
+        0.8 // headWidth
+      );
+    });
+  }, [pathPoints]);
+  
+  return (
+    <group>
+      {previewArrows.map((arrow, index) => (
+        <primitive
+          key={index}
+          object={arrow}
+        />
+      ))}
+    </group>
+  );
+};
+
 const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({ 
   children, 
   scrollProgress 
@@ -391,6 +481,8 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
             <>
               <PathVisualizer pathPoints={pathPoints} />
               <PathMarkers pathPoints={pathPoints} />
+              <LookAtVisualizer pathPoints={pathPoints} scrollProgress={scrollProgress} />
+              <StaticLookPreview pathPoints={pathPoints} />
             </>
           )}
           
