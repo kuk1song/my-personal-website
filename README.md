@@ -1,40 +1,70 @@
-# 🤖 Hey Human
+<div align="center">
 
-> My personal portfolio with a cyberpunk digital pet
+# **Song's Interstellar Journey**
 
-## ✨ What's Special?
+**An immersive 3D portfolio website built with React, Three.js, and GSAP.**
 
-- 🐾 **Interactive Digital Pet** - Drag it around, shoot lasers with spacebar
-- ⚡ **Cyberpunk Style** - Neon glows, particles, glitch effects
-- 🎮 **Keyboard Controls** - Arrow keys to move, spacebar for lasers
-- 🔋 **Pet Energy System** - Charge your pet when it's tired
+[![Website](https://img.shields.io/badge/Live--Demo-blue?style=for-the-badge&logo=vercel)](https://www.kuk1song.com/)
+[![GitHub](https://img.shields.io/github/stars/kuk1song/my-personal-website?style=for-the-badge&logo=github)](https://github.com/kuk1song/my-personal-website)
 
-Visit [kuk1song.com](kuk1song.com) and meet your digital pet! 🤖
+</div>
 
-## 🎮 How to Play
+https://github.com/kuk1song/my-personal-website/assets/11262335/5a92a5c1-e22f-41e9-9065-4d7a8d9a6c7c
 
-1. **Drag** your pet around the screen
-2. **Press spacebar** to shoot lasers ⚡
-3. **Use arrow keys** for precise movement
-4. **Charge** your pet when energy is low 🔋
+## 🚀 Core Features
 
-## 👨‍💻 About Me
+- **🌌 Immersive 3D Star Journey**: A scroll-driven cinematic experience that takes you on a journey past beautifully rendered 3D planets.
+- **🤖 Interactive Digital Pet**: An on-screen companion that reacts to your interactions.
+- **🎬 GSAP-Powered Animations**: Seamless integration of 2D and 3D animations, perfectly synchronized with user scrolling.
+- **🎨 Modern Tech Stack**: Built with the latest in frontend technology for a fast, responsive, and maintainable experience.
+- **✨ Hardware-Accelerated Performance**: Optimized for smooth animations even with complex DOM and WebGL elements.
 
-**Haokun Song** - AI Product Builder & Software Engineer
+## 🛠️ Tech Stack
 
-📧 shk741612898@gmail.com  
-💼 [LinkedIn](https://www.linkedin.com/in/haokun-song/)
+| Category          | Technology                                                                                                                                                             |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Framework**     | [![React](https://img.shields.io/badge/-React-20232A?style=flat-square&logo=react)](https://react.dev/) [![TypeScript](https://img.shields.io/badge/-TypeScript-007ACC?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)     |
+| **3D Rendering**  | [![Three.js](https://img.shields.io/badge/-Three.js-000000?style=flat-square&logo=three.js)](https://threejs.org/) [![React Three Fiber](https://img.shields.io/badge/-React_Three_Fiber-926488?style=flat-square)](https://docs.pmnd.rs/react-three-fiber) |
+| **Animation**     | [![GSAP](https://img.shields.io/badge/-GSAP-88CE02?style=flat-square&logo=greensock)](https://gsap.com/)                                                                  |
+| **Styling**       | [![Tailwind CSS](https://img.shields.io/badge/-Tailwind_CSS-06B6D4?style=flat-square&logo=tailwindcss)](https://tailwindcss.com/)                                         |
+| **Build Tool**    | [![Vite](https://img.shields.io/badge/-Vite-646CFF?style=flat-square&logo=vite)](https://vitejs.dev/)                                                                      |
+| **Deployment**    | [![Vercel](https://img.shields.io/badge/-Vercel-000000?style=flat-square&logo=vercel)](https://vercel.com/)                                                                |
 
----
+## 🔧 Getting Started
 
-**Don't forget to charge your pet!**
+### Prerequisites
+
+- Node.js (v18 or higher)
+- pnpm (or npm/yarn)
+
+### Installation & Running Locally
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/kuk1song/my-personal-website.git
+    cd my-personal-website
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    pnpm install
+    ```
+
+3.  **Run the development server:**
+    ```bash
+    pnpm dev
+    ```
+
+The site will be available at `http://localhost:8080`.
+
+## 📂 Project Documentation
+
+For a deeper dive into the project's architecture, future plans, and key decisions, please refer to our documentation:
+
+- **[📄 Technical Architecture](./docs/technical-architecture.md)**
+- **[✨ Feature Roadmap](./docs/feature-roadmap.md)**
+- **[ निर्णय Architecture Decision Records (ADR)](./docs/adr/)**
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🎯 Copyright
-
-© 2025 Haokun Song. All rights reserved.
-
-Original design and implementation by Kuki Song.
+This project is licensed under the **MIT License**. See the [LICENSE](./LICENSE) file for details.
