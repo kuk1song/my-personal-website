@@ -40,7 +40,7 @@ const HeroSection = () => {
       <div id="hero-content" className="container mx-auto px-6 text-center z-10 relative">
         <div className="mb-10 inline-block">
           <div className="px-4 py-2 bg-[#030637]/80 border border-[#48CAE4]/40 mb-4 inline-block font-fira">
-            <span className="text-[#48CAE4] font-mono">&lt;coder&gt;</span>
+            <span className="text-[#48CAE4] font-mono">&lt;/coder&gt;</span>
           </div>
         </div>
         
