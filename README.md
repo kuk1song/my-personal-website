@@ -9,7 +9,8 @@
 
 </div>
 
-https://github.com/kuk1song/my-personal-website/assets/11262335/5a92a5c1-e22f-41e9-9065-4d7a8d9a6c7c
+[kuk1song.com](https://github.com/kuk1song/my-personal-website)
+
 
 ## 🚀 Core Features
 
