@@ -514,7 +514,7 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
 }) => {
   const sceneTargetRef = useRef<THREE.Group>(null);
   const [isReady, setIsReady] = useState(false);
-  const [showPathTools, setShowPathTools] = useState(true); // 🎯 Toggle for development
+  const [showPathTools, setShowPathTools] = useState(false); // 🎯 Toggle for development
   const [screenPositions, setScreenPositions] = useState<{x: number, y: number, visible: boolean}[]>([]);
 
   // Extract pathPoints to share between camera and visualizer
@@ -527,7 +527,14 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
     new THREE.Vector3(19, -8, -32),
 
     // Red Planet Fly-by: A wider, more graceful arc
-    new THREE.Vector3(10, -2, -40),   // 5. Approach red from a distance
+    new THREE.Vector3(15, -5, -36),
+    new THREE.Vector3(10, -2, -45),   // 5. Approach red from a distance
+    new THREE.Vector3(1, 2, -30),
+    new THREE.Vector3(6, 0, -32),
+    new THREE.Vector3(5, 2, -25),
+    new THREE.Vector3(11, 1, -30),
+    new THREE.Vector3(17, 1, -35),
+    
     new THREE.Vector3(18, -1, -45),   // 6. Sweep past the right side of the red planet
     new THREE.Vector3(22, 1, -50),    // 7. Exit the arc, looking ahead to purple
 
@@ -549,8 +556,14 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
     new THREE.Vector3(12, -3, -35), // 5. Use default
 
     // Index 6-8: Custom directions for red planet fly-by
+    new THREE.Vector3(12, -3, -35),
+    new THREE.Vector3(12, -3, -35),
+    new THREE.Vector3(12, -3, -35),
     new THREE.Vector3(12, -3, -35),   // 6. Look directly at red planet
     new THREE.Vector3(12, -3, -35),   // 7. Keep looking at red planet
+    new THREE.Vector3(15, 2, -50), 
+    new THREE.Vector3(15, 2, -50),
+    new THREE.Vector3(15, 2, -50),
     new THREE.Vector3(18, 8, -65),    // 8. Start looking toward purple planet
 
     // Index 9-11: Simplified purple planet approach (removed extra directions)
