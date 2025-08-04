@@ -114,21 +114,84 @@ const PathMarkers = ({ pathPoints }: { pathPoints: THREE.Vector3[] }) => {
               color={index === 0 ? "#00FF00" : index === pathPoints.length - 1 ? "#FF0000" : "#FFDD00"} 
             />
           </mesh>
-          
-          {/* Number label */}
-          <mesh position={[0, 0.8, 0]}>
-            <planeGeometry args={[0.8, 0.8]} />
-            <meshBasicMaterial 
-              color="#000000" 
-              transparent 
-              opacity={0.8}
-            />
-          </mesh>
-          
-          {/* 3D Text would be complex, so we'll use a simple approach with HTML overlay */}
         </group>
       ))}
     </group>
+  );
+};
+
+// 🎯 NEW: Screen position calculator (runs inside Canvas)
+const ScreenPositionCalculator = ({ 
+  pathPoints, 
+  onPositionsUpdate 
+}: { 
+  pathPoints: THREE.Vector3[]; 
+  onPositionsUpdate: (positions: {x: number, y: number, visible: boolean}[]) => void;
+}) => {
+  useFrame((state) => {
+    const camera = state.camera;
+    const newPositions = pathPoints.map(point => {
+      const vector = point.clone();
+      vector.project(camera);
+      
+      // Convert normalized device coordinates to screen coordinates
+      const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
+      const y = (vector.y * -0.5 + 0.5) * window.innerHeight;
+      
+      // Check if point is visible (not behind camera)
+      const visible = vector.z < 1;
+      
+      return { x, y, visible };
+    });
+    
+    onPositionsUpdate(newPositions);
+  });
+
+  return null; // This component doesn't render anything
+};
+
+// 🎯 NEW: HTML overlay for path point labels (outside Canvas)
+const PathPointLabelsOverlay = ({ 
+  pathPoints, 
+  screenPositions 
+}: { 
+  pathPoints: THREE.Vector3[];
+  screenPositions: {x: number, y: number, visible: boolean}[];
+}) => {
+  return (
+    <div style={{ 
+      position: 'fixed', 
+      inset: 0, 
+      pointerEvents: 'none', 
+      zIndex: 100 
+    }}>
+      {screenPositions.map((pos, index) => (
+        <div
+          key={index}
+          style={{
+            position: 'absolute',
+            left: `${pos.x}px`,
+            top: `${pos.y - 25}px`, // Offset above the sphere
+            transform: 'translate(-50%, -50%)',
+            color: index === 0 ? "#00FF00" : index === pathPoints.length - 1 ? "#FF0000" : "#FFDD00",
+            fontFamily: 'monospace',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            textShadow: '0 0 8px rgba(0,0,0,0.9), 0 0 4px currentColor',
+            backgroundColor: 'rgba(0,0,0,0.7)',
+            padding: '4px 8px',
+            borderRadius: '6px',
+            border: `1px solid ${index === 0 ? "#00FF00" : index === pathPoints.length - 1 ? "#FF0000" : "#FFDD00"}`,
+            opacity: pos.visible ? 1 : 0,
+            transition: 'opacity 0.2s ease',
+            minWidth: '24px',
+            textAlign: 'center',
+          }}
+        >
+          {index}
+        </div>
+      ))}
+    </div>
   );
 };
 
@@ -451,7 +514,8 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
 }) => {
   const sceneTargetRef = useRef<THREE.Group>(null);
   const [isReady, setIsReady] = useState(false);
-  const [showPathTools, setShowPathTools] = useState(false); // 🎯 Toggle for development
+  const [showPathTools, setShowPathTools] = useState(true); // 🎯 Toggle for development
+  const [screenPositions, setScreenPositions] = useState<{x: number, y: number, visible: boolean}[]>([]);
 
   // Extract pathPoints to share between camera and visualizer
   const pathPoints = React.useMemo(() => [
@@ -558,6 +622,7 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
               <PathMarkers pathPoints={pathPoints} />
               <LookAtVisualizer pathPoints={pathPoints} scrollProgress={scrollProgress} calculateLookAtTarget={calculateLookAtTarget} />
               <StaticLookPreview pathPoints={pathPoints} calculateLookAtTarget={calculateLookAtTarget} />
+              <ScreenPositionCalculator pathPoints={pathPoints} onPositionsUpdate={setScreenPositions} />
             </>
           )}
           
@@ -647,6 +712,9 @@ const InterstellarJourney: React.FC<InterstellarJourneyProps> = ({
           </div>
         </div>
       )}
+      
+      {/* 🎯 NEW: Real-time path point labels overlay */}
+      {showPathTools && <PathPointLabelsOverlay pathPoints={pathPoints} screenPositions={screenPositions} />}
       
       <div style={{ position: 'relative', zIndex: 1 }}>
         {children}
