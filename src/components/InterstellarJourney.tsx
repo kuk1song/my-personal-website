@@ -54,12 +54,15 @@ const PerfectMirrorCamera = ({ scrollProgress, pathPoints, calculateLookAtTarget
     state.camera.position.lerp(targetPos, lerpFactor);
     
     // Adjust FOV effect for the new path timing
+    // 🎯 TEMPORARILY DISABLED FOR PERFORMANCE TESTING
+    /*
     const landingProgress = Math.max(0, (progress - 0.75) / 0.25);
     const baseFov = 75;
     const warpFov = 95;
     const camera = state.camera as THREE.PerspectiveCamera;
     camera.fov = baseFov + (warpFov - baseFov) * Math.sin(landingProgress * Math.PI);
     camera.updateProjectionMatrix();
+    */
 
     // 🎯 NEW: Use interpolated look-at targets between path points
     const currentLookAt = calculateLookAtTarget(currentPoint, currentIndex);

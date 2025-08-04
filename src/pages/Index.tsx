@@ -65,21 +65,21 @@ const Index = () => {
 
       // 2. Animate About Section IN (From a 'Planet') - "Approaching Data Planet"
       tl.fromTo('#about-section', 
-        { scale: 0.1, opacity: 0, borderRadius: '50%', filter: 'blur(20px)' },
-        { scale: 1, opacity: 1, borderRadius: '0%', filter: 'blur(0px)', ease: 'power2.out', duration: 1.5 }
+        { scale: 0.1, opacity: 0, borderRadius: '50%' },
+        { scale: 1, opacity: 1, borderRadius: '0%', ease: 'power2.out', duration: 1.5 }
       );
 
       // 3. Animate About Section OUT (Zoom Through) - "Leaving Data Planet"
       tl.to('#about-section', { 
-        scale: 2, 
+        transform: 'scale3d(1.5, 1.5, 1) translateZ(0)', // 🎯 Hardware acceleration + reduced scale
         opacity: 0, 
         ease: 'power2.inOut' 
       });
 
       // 4. Animate Products Section IN (From a 'Planet') - "Approaching Tech Planet"
       tl.fromTo('#products-section', 
-        { scale: 0.1, opacity: 0, borderRadius: '50%', filter: 'blur(20px)' },
-        { scale: 1, opacity: 1, borderRadius: '0%', filter: 'blur(0px)', ease: 'power2.out', duration: 1.5 }
+        { scale: 0.1, opacity: 0, borderRadius: '50%' },
+        { scale: 1, opacity: 1, borderRadius: '0%', ease: 'power2.out', duration: 1.5 }
       );
 
     }, mainRef);
