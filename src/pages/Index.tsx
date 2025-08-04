@@ -40,6 +40,9 @@ const Index = () => {
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
+      // Check if we're on mobile for performance optimizations
+      const isMobile = window.innerWidth <= 768;
+      
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: mainRef.current,
@@ -56,12 +59,13 @@ const Index = () => {
         ease: 'power2.inOut' 
       }, 0); // Start at the very beginning of the timeline
 
-      // 1. Animate Hero Section OUT (Zoom Through) - "Departing Home Planet"
+      // 1. Animate Hero Section OUT (Zoom Through) - "Departing Home Planet" - MUCH EARLIER START
       tl.to('#hero-content', { 
-        scale: 2, 
+        transform: isMobile ? 'scale3d(1.3, 1.3, 1) translateZ(0)' : 'scale3d(2, 2, 1) translateZ(0)', // GPU acceleration
         opacity: 0, 
-        ease: 'power2.inOut' 
-      });
+        ease: 'power2.inOut',
+        duration: 0.8 // Even shorter duration for quicker animation
+      }, 0.05); // Start much earlier - almost immediately when scrolling begins
 
       // 2. Animate About Section IN (From a 'Planet') - "Approaching Data Planet"
       tl.fromTo('#about-section', 
@@ -71,7 +75,7 @@ const Index = () => {
 
       // 3. Animate About Section OUT (Zoom Through) - "Leaving Data Planet"
       tl.to('#about-section', { 
-        transform: 'scale3d(1.5, 1.5, 1) translateZ(0)', // 🎯 Hardware acceleration + reduced scale
+        transform: isMobile ? 'scale3d(1.2, 1.2, 1) translateZ(0)' : 'scale3d(1.5, 1.5, 1) translateZ(0)', // GPU acceleration
         opacity: 0, 
         ease: 'power2.inOut' 
       });
@@ -79,7 +83,15 @@ const Index = () => {
       // 4. Animate Products Section IN (From a 'Planet') - "Approaching Tech Planet"
       tl.fromTo('#products-section', 
         { scale: 0.1, opacity: 0, borderRadius: '50%' },
-        { scale: 1, opacity: 1, borderRadius: '0%', ease: 'power2.out', duration: 1.5 }
+        { 
+          scale: 1, 
+          opacity: 1, 
+          borderRadius: '0%', 
+          ease: 'power2.out', 
+          duration: 1.5,
+          // Add GPU acceleration for the Products section animation
+          force3D: true
+        }
       );
 
     }, mainRef);
