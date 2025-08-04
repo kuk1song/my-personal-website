@@ -28,10 +28,6 @@ const ProductsSection = () => {
           </div>
         </div>
       </div>
-      
-      {/* Art elements */}
-      <div className="absolute top-40 left-0 w-40 h-40 bg-[#0077B6] rounded-full blur-[100px] opacity-10"></div>
-      <div className="absolute bottom-20 right-0 w-60 h-60 bg-[#48CAE4] rounded-full blur-[120px] opacity-5"></div>
     </section>
   );
 };

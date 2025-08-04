@@ -11,7 +11,6 @@
 import React, { useLayoutEffect, useRef, useState, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import ParticleBackground from '@/components/ParticleBackground';
 import Navigation from '@/components/Navigation';
 import HeroSection from '@/components/HeroSection';
 import AboutSection from '@/components/AboutSection';
@@ -93,6 +92,13 @@ const Index = () => {
           force3D: true
         }
       );
+
+      // 5. OPTIONAL: Products Section OUT - Clean exit to prevent lingering effects
+      tl.to('#products-section', {
+        // Keep it visible but ensure all animations are complete
+        opacity: 1,
+        duration: 0.1
+      }, "+=0.5");
 
     }, mainRef);
 
