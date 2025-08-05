@@ -60,7 +60,7 @@ The site will be available at `http://localhost:8080`.
 
 ## 📂 Project Documentation
 
-For a deeper dive into the project's architecture, future plans, and key decisions, please refer to our documentation:
+For a deeper dive into the project's architecture, future plans, and key decisions, please refer to the documentation:
 
 - **[Technical Architecture](./docs/technical-architecture.md)**
 - **[Feature Roadmap](./docs/feature-roadmap.md)**
