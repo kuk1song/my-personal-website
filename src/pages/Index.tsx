@@ -70,7 +70,7 @@ const Index = () => {
       tl.fromTo('#about-section', 
         { scale: 0.1, opacity: 0, borderRadius: '50%' },
         { scale: 1, opacity: 1, borderRadius: '0%', ease: 'power2.out', duration: 1.5 },
-         "+=0.7"
+         "+=0.45"
       );
 
       // 3. Animate About Section OUT (Zoom Through) - "Leaving Data Planet"
@@ -92,7 +92,7 @@ const Index = () => {
           // Add GPU acceleration for the Products section animation
           force3D: true
         },
-        "+=0.95" // 🎯 KEY PARAMETER: Wait 0.95 seconds after About Me disappears
+        "+=1.15" // 🎯 KEY PARAMETER: Wait 1.15 seconds after About Me disappears
       );
 
       // 5. OPTIONAL: Products Section OUT - Clean exit to prevent lingering effects
