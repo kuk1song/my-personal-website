@@ -1,6 +1,6 @@
 <div align="center">
 
-# **Song's Interstellar Journey**
+# **Welcome to Song's Interstellar Journey 🌌** 
 
 **An immersive 3D portfolio website built with React, Three.js, and GSAP.**
 
