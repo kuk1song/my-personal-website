@@ -1,6 +1,6 @@
 <div align="center">
 
-# **Welcome to Song's Interstellar Journey 🌌** 
+# **Welcome to Song's Interstellar Journey ✨** 
 
 **An immersive 3D portfolio website built with React, Three.js, and GSAP.**
 
@@ -18,7 +18,7 @@
 - **🤖 Interactive Digital Pet**: An on-screen companion that reacts to your interactions.
 - **🎬 GSAP-Powered Animations**: Seamless integration of 2D and 3D animations, perfectly synchronized with user scrolling.
 - **🎨 Modern Tech Stack**: Built with the latest in frontend technology for a fast, responsive, and maintainable experience.
-- **✨ Hardware-Accelerated Performance**: Optimized for smooth animations even with complex DOM and WebGL elements.
+- **📈 Hardware-Accelerated Performance**: Optimized for smooth animations even with complex DOM and WebGL elements.
 
 ## 🛠️ Tech Stack
 
@@ -62,9 +62,9 @@ The site will be available at `http://localhost:8080`.
 
 For a deeper dive into the project's architecture, future plans, and key decisions, please refer to our documentation:
 
-- **[📄 Technical Architecture](./docs/technical-architecture.md)**
-- **[✨ Feature Roadmap](./docs/feature-roadmap.md)**
-- **[ निर्णय Architecture Decision Records (ADR)](./docs/adr/)**
+- **[Technical Architecture](./docs/technical-architecture.md)**
+- **[Feature Roadmap](./docs/feature-roadmap.md)**
+- **[ Architecture Decision Records (ADR)](./docs/adr/)**
 
 ## 📄 License
 
